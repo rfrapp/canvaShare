@@ -1,4 +1,4 @@
-// Name: Ryan Frappier
+// Name: Travis Banks, Austin Frandsen, and Ryan Frappier
 // File: main.cpp
 //
 // Description: 
