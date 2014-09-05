@@ -9,7 +9,7 @@
 
 int main()
 {
-    Program program(640, 480);
+    Program program(1024, 768);
 
     return program.execute();
 }
