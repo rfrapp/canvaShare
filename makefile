@@ -3,8 +3,11 @@ exe: main.cpp
 r:
 	./a.out
 push:
+	rm ./a.out 
 	git add . -A
 	git commit 
 	git push
 clean:
-	rm ./a.out 
+	rm ./a.out
+pull:
+	git pull 
