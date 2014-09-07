@@ -7,6 +7,8 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 
+#include "Canvas.h"
+
 class Program
 {
 private:
@@ -15,11 +17,14 @@ private:
 
 	SDL_Window   *window;
 	SDL_Renderer *renderer;
-    SDL_Event e;
+    SDL_Event    e;
+
+    Canvas canvas;
 
 public:
 	Program(int w, int h) : screen_width(w), screen_height(h),
-	                        window(NULL), renderer(NULL), quit(false)
+	                        quit(false), window(NULL), renderer(NULL),
+	                        canvas(renderer, w, h)
 	{ 
 	}
 

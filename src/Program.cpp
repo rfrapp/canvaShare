@@ -47,6 +47,12 @@ bool Program::init()
             	// This sets the color that will be drawn at each frame
             	// before drawing everthing else (i.e. the 'fill' color)
                 SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+            
+                // Set the canvas' renderer to the newly created
+                // one 
+                canvas.set_renderer(renderer);
+
+                canvas.init_controls();
             }
         }
     }
@@ -82,11 +88,14 @@ int Program::execute()
                 quit = true;
         }
 
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
         // Clear the screen by drawing over the previous
         // frame with the RenderClearColor 
         SDL_RenderClear(renderer);
 
         // Draw code goes here
+        canvas.draw();
 
         // Update the screen with the newly drawn content
         SDL_RenderPresent(renderer);
