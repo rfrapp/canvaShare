@@ -86,6 +86,8 @@ int Program::execute()
         	// the program
             if (e.type == SDL_QUIT)
                 quit = true;
+
+            canvas.handle_input(&e);
         }
 
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);

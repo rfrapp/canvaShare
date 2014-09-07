@@ -13,7 +13,6 @@ class Button : public Control
 {
 private:
 	std::string label;
-	bool show_hover;
 
 	Texture bg_img;
 	Rect    img_clip;
@@ -26,7 +25,7 @@ public:
 		    Uint8 f_r = 0,   Uint8 f_g = 0,   Uint8 f_b = 0)
 
 			: Control(r, w, h, x, y, b_r, b_g, b_b, f_r, f_g, f_b),
-			  show_hover(false), label(l), bg_img(Texture()), 
+			  label(l), bg_img(Texture()), 
 			  img_clip(Rect(clip_x, clip_y, clip_w, clip_h))
 	{
 		bg_img.load_from_file(renderer, img_path, 255, 255, 255);
@@ -39,6 +38,7 @@ public:
 
 	void set_label(std::string s) { label = s;    }
 
+	void handle_input(SDL_Event *e);
 };
 
 #endif 

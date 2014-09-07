@@ -37,7 +37,7 @@ public:
 	void init_controls();
 
 	void draw();
-	void handle_input(SDL_Event *e) {  }
+	void handle_input(SDL_Event *e);
 
 	void set_renderer(SDL_Renderer *r) { renderer = r; }
 };
