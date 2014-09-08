@@ -30,10 +30,21 @@ public:
 
 	~Program() { cleanup(); }
 
+	// Calls init() and load_media()
 	bool initialize_program();
+
+	// Initializes SDL
 	bool init();
+	
+	// loads all images, fonts, etc
+	// needed for the program
 	bool load_media();
+
+	// The main loop of the program
 	int  execute();
+
+	// Quits SDL and all of the subsystems
+	// used as well as deallocates memory
 	void cleanup();
 };
 

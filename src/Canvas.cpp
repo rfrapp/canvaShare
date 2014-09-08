@@ -3,6 +3,7 @@
 
 void Canvas::draw()
 {
+	// Draws all the controls on the canvas
 	for (int i = 0; i < controls.size(); i++)
 	{
 		controls[i]->draw();
@@ -11,6 +12,7 @@ void Canvas::draw()
 
 void Canvas::handle_input(SDL_Event *e)
 {
+	// Checks if you clicked a button
 	for (int i = 0; i < controls.size(); i++)
 		controls[i]->handle_input(e);
 }

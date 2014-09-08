@@ -25,7 +25,7 @@ void Button::draw()
 		o_rect.w = bounding_rect.w + 4;
 		o_rect.h = bounding_rect.h + 4;
 
-		std::cout << bounding_rect.x << " " << bounding_rect.y << ' ' << bounding_rect.w << ' ' << bounding_rect.h << '\n';
+		// std::cout << bounding_rect.x << " " << bounding_rect.y << ' ' << bounding_rect.w << ' ' << bounding_rect.h << '\n';
 
 		// draw the outline rectangle in an inverted
 		// color from the BG

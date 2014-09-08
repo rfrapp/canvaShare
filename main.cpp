@@ -9,7 +9,10 @@
 
 int main()
 {
+    // Create a program object with width 1024
+    // and height 768
     Program program(1024, 768);
 
+    // Execute the main loop
     return program.execute();
 }
