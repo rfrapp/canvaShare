@@ -1,5 +1,6 @@
+#include <iostream>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_gfxPrimitives.h>
+#include "SDL2_gfxPrimitives.h"
 
 int main()
 {

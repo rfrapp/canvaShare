@@ -8,6 +8,6 @@ push:
 	git commit 
 	git push
 clean:
-	rm ./a.out
+        rm ./a.out
 pull:
 	git pull 
