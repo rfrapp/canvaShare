@@ -7,7 +7,7 @@ bool TextSurface::load_from_rendered_text(SDL_Renderer *r)
 	destroy();
 
 	std::string lines_text = "";
-	std::cout << "lines size: " << lines.size() << std::endl;
+	// std::cout << "lines size: " << lines.size() << std::endl;
 
 	for (int i = 0; i < lines.size() - 1; i++)
 	{

@@ -56,9 +56,7 @@ public:
 	void render(SDL_Renderer *renderer)
 	{
 		if (lines.size() > 0)
-		{
 			Texture::render(renderer, x, y);
-		}
 	}
 
 	void set_text(SDL_Renderer * r, std::string str)
@@ -172,7 +170,7 @@ public:
 
 	void remove_char_at(SDL_Renderer *r, int index)
 	{
-		if (index == length())
+		if (index == length() - 1)
 			pop(r);
 		else
 		{
@@ -219,7 +217,7 @@ public:
 		int len = lines[lines.size() - 1].length();
 
 		if (len != 0)
-			lines[lines.size() - 1].erase(len - 1, len);
+			lines[lines.size() - 1].erase(len - 1, 1);
 		else
 			lines.pop_back();
 

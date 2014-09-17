@@ -68,20 +68,21 @@ public:
 	        	if (cursor_pos > 0)
 	        		c = surface.get_char_at_index(cursor_pos - 1);
 
-	        	std::cout << "here " << cursor_pos << std::endl;
+	        	// std::cout << "here " << cursor_pos << std::endl;
 
 	            // lop off character
 	            surface.remove_char_at(renderer, cursor_pos - 1);
 	            std::string last_line = "";
 
-	            if (surface.get_lines().size() > 0)
-	            	last_line = surface.get_lines()[current_line - 1];
-	            
 	            // If the cursor is at the far left of the box
 	            if (cursor_rect.x == bounding_rect.x)
 	            {
+	            	if (surface.get_lines().size() > 0)
+	            		last_line = surface.get_lines()[current_line - 1];
+
 	            	// Change the current edited line
 	     			current_line--;
+	     			cursor_pos++;
 
 	            	// Adjust the cursor position
 	            	cursor_rect.x = bounding_rect.x + surface.get_font()->get_width(last_line.c_str());
@@ -207,12 +208,6 @@ public:
 	        {
 	            // Append character at the cursor position
 	            surface.insert_text_at_index(renderer, e->text.text, cursor_pos);
-
-	            // Get the line after current line of the text
-	            std::string current_line_str = "";
-
-	            if (current_line + 1 < surface.get_lines().size())
-	            	current_line_str = surface.get_lines()[current_line + 1];
 	            
 	            // Add the width of the entered character to the cursor 
 	            // rectangle 
@@ -222,7 +217,17 @@ public:
 	            // the TextBox 
 	            if (cursor_rect.x > bounding_rect.w)
 	            {
-	            	cursor_rect.x = bounding_rect.x;
+	            	// Get the line after current line of the text
+		            std::string current_line_str = "";
+
+		            if (current_line + 1 < surface.get_lines().size())
+		            {
+		            	current_line_str = surface.get_lines()[current_line + 1];
+		            	cursor_rect.x = bounding_rect.x + surface.get_font()->get_width(current_line_str.c_str());
+		            }
+		            else
+	            		cursor_rect.x = bounding_rect.x;
+
 	            	cursor_rect.y = bounding_rect.y + (current_line + 1) * surface.get_font()->get_line_height();
 	            }
 
