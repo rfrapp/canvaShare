@@ -75,22 +75,24 @@ public:
 	            std::string last_line = "";
 
 	            if (surface.get_lines().size() > 0)
-	            	last_line = surface.get_lines()[surface.num_lines() - 1];
+	            	last_line = surface.get_lines()[current_line - 1];
 	            
+	            // If the cursor is at the far left of the box
 	            if (cursor_rect.x == bounding_rect.x)
 	            {
+	            	// Change the current edited line
+	     			current_line--;
+
 	            	// Adjust the cursor position
 	            	cursor_rect.x = bounding_rect.x + surface.get_font()->get_width(last_line.c_str());
-	            	cursor_rect.y = bounding_rect.y + (surface.num_lines() - 1) * surface.get_font()->get_line_height();
+	            	cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
 	        	}
-	        	else
+	        	else // If the cursor is not at the end
 	        	{
 	        		if (cursor_pos > 0)
 	        			cursor_rect.x -= surface.get_font()->get_width(c.c_str());
 	        		else
-	        		{
 	        			cursor_rect.x = bounding_rect.x;
-	        		}
 	        	}
 
 	            if (cursor_pos > 0)
@@ -99,29 +101,51 @@ public:
 
 	        if (e->key.keysym.sym == SDLK_RETURN)
 	        {
+	        	// Add a new line to the TextSurface
 	        	surface.add_newline();
+
+	        	// Set the cursor to the TextBox's far-left
+	        	// bound and add the length of a line to the
+	        	// cursor's y 
 	        	cursor_rect.x = bounding_rect.x; 
 	        	cursor_rect.y += surface.get_font()->get_line_height();
 	        }
 
 	        if (e->key.keysym.sym == SDLK_LEFT)
 	        {
+	        	// Only move the cursor left if if is not
+	        	// already at the very beginning of the 
+	        	// string
 	        	if (cursor_pos > 0)
         			cursor_pos--;
 
+        		// If the cursor is not at the far
+        		// left of a line
 	        	if (cursor_rect.x != bounding_rect.x)
 	        	{
+	        		// Get the character at the cursor's position
 	        		std::string c = surface.get_char_at_index(cursor_pos);
+
+	        		// Subtract the width of that character from the 
+	        		// cursor rectangle's position
 	        		cursor_rect.x -= surface.get_font()->get_width(c.c_str());
 	        	}
-	        	else 
+	        	else // The user hit the left arrow at the beginning of a line
 	        	{
+	        		// Change the currently edited line to the previous one
 	        		current_line--;
+	        		
+	        		// Increase the cursor position by one to compensate for
+	        		// the line change 
 	        		cursor_pos++;
 
 	        		if (current_line >= 0)
 		        	{
+		        		// Get the text for the current line 
 		        		std::string line = surface.get_lines()[current_line];
+
+		        		// Change the cursor position to the y value for the
+		        		// current line and the x value of the end of that line
 		        		cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
 		        		cursor_rect.x = bounding_rect.x + surface.get_font()->get_width(line.c_str());
 		        	}
@@ -134,19 +158,40 @@ public:
 	        {
 	        	if (cursor_pos < surface.length())
 	        	{
+	        		// Advance the cursor 1 further in 
+	        		// the string
 	        		cursor_pos++;
+
+	        		// Get the text for the current line 
 	        		std::string line = surface.get_lines()[current_line];
 
+	        		// Check if the user pressed the right arrow key
+	        		// and the cursor is at the end of the current
+	        		// line 
 	        		if (cursor_rect.x == bounding_rect.x + surface.get_font()->get_width(line.c_str()))
 	        		{
+	        			// Change the current line to the next one
 	        			current_line++;
+
+	        			// Subtract one from the cursor position to
+	        			// compensate for the line change
 	        			cursor_pos--;
+
+	        			// Set the cursor x to the left bound of the
+	        			// textbox
 	        			cursor_rect.x = bounding_rect.x;
+
+	        			// Set the cursor y to the y value of the 
+	        			// current line 
 	        			cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
 	        		}
-	        		else
+	        		else // If the cursor is not at the right end of the line
 	        		{
+	        			// Get the character before the current position 
 	        			std::string c = surface.get_char_at_index(cursor_pos - 1);
+
+	        			// Add the width of that character to the cursor's x 
+	        			// value 
 	        			cursor_rect.x += surface.get_font()->get_width(c.c_str());
 	        		}
 
@@ -154,23 +199,31 @@ public:
 	        	}
 	        }
 		}
-		//Special text input event
+		// Check if the user entered text
 	    else if( e->type == SDL_TEXTINPUT )
 	    {
-	        //Not copy or pasting
+	        // Not copy or pasting
 	        if( !( ( e->text.text[ 0 ] == 'c' || e->text.text[ 0 ] == 'C' ) && ( e->text.text[ 0 ] == 'v' || e->text.text[ 0 ] == 'V' ) && SDL_GetModState() & KMOD_CTRL ) )
 	        {
-	            //Append character
+	            // Append character at the cursor position
 	            surface.insert_text_at_index(renderer, e->text.text, cursor_pos);
-	            std::string last_line = surface.get_lines()[surface.num_lines() - 1];
+
+	            // Get the line after current line of the text
+	            std::string current_line_str = "";
+
+	            if (current_line + 1 < surface.get_lines().size())
+	            	current_line_str = surface.get_lines()[current_line + 1];
 	            
-	            // Change the x,y position 
+	            // Add the width of the entered character to the cursor 
+	            // rectangle 
 	            cursor_rect.x += surface.get_font()->get_width(&e->text.text[0]);
 
+	            // If the cursor ran outside the bounds of
+	            // the TextBox 
 	            if (cursor_rect.x > bounding_rect.w)
 	            {
-	            	cursor_rect.x = bounding_rect.x + surface.get_font()->get_width(last_line.c_str());
-	            	cursor_rect.y = bounding_rect.y + (surface.num_lines() - 1) * surface.get_font()->get_line_height();
+	            	cursor_rect.x = bounding_rect.x;
+	            	cursor_rect.y = bounding_rect.y + (current_line + 1) * surface.get_font()->get_line_height();
 	            }
 
 	            cursor_pos++;

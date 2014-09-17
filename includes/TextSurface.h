@@ -55,7 +55,7 @@ public:
 
 	void render(SDL_Renderer *renderer)
 	{
-		if (text() != "")
+		if (lines.size() > 0)
 		{
 			Texture::render(renderer, x, y);
 		}
@@ -190,6 +190,13 @@ public:
 				new_index -= lines[i].length();
 			}
 			std::cout << "new_index: " << new_index << std::endl;
+
+			if (new_index == -1 && edited_index > 0)
+			{
+				edited_index--;
+				new_index = lines[edited_index].length() - 1;
+				line = lines[edited_index];
+			}
 
 			if (line.length() > 1)
 				line = line.erase(new_index, 1);
