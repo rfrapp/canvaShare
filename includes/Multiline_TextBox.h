@@ -165,7 +165,7 @@ public:
 	            std::string last_line = surface.get_lines()[surface.num_lines() - 1];
 	            
 	            // Change the x,y position 
-	            cursor_rect.x += surface.get_font()->get_width(e->text.text);
+	            cursor_rect.x += surface.get_font()->get_width(&e->text.text[0]);
 
 	            if (cursor_rect.x > bounding_rect.w)
 	            {

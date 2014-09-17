@@ -19,7 +19,7 @@ void Canvas::handle_input(SDL_Event *e)
 
 bool Canvas::load_media()
 {
-	font = new Font("fonts/arial.ttf", 24);
+	font = new Font("fonts/cour.ttf", 24);
 
 	return true;
 }
