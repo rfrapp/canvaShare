@@ -9,6 +9,7 @@
 
 #include "Control.h"
 #include "Button.h"
+#include "Multiline_TextBox.h"
 
 class Canvas
 {
@@ -26,6 +27,8 @@ private:
 	// shapes 
 	Uint32 background; 
 
+	Font *font;
+
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
 	      : w(width), h(height), renderer(r),
@@ -35,8 +38,13 @@ public:
 
 	~Canvas()
 	{
+		// Clear the memory which was allocated for
+		// the controls
 		for (int i = 0; i < controls.size(); i++)
 			delete controls[i];
+
+		// Clear the memory allocated for the font
+		font->destroy();
 	}
 
 	// Creates the Control objects needed for the
@@ -47,6 +55,9 @@ public:
 	// screen
 	void draw();
 	void handle_input(SDL_Event *e);
+
+	// Loads fonts, images, etc.
+	bool load_media();
 
 	// Setter for the renderer property 
 	void set_renderer(SDL_Renderer *r) { renderer = r; }

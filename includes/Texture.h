@@ -12,7 +12,7 @@
 
 class Texture
 {
-private:
+protected:
     SDL_Texture *texture;
     SDL_PixelFormat pixel_format;
     SDL_RendererFlip flip_mode;
@@ -25,7 +25,8 @@ private:
     void *pixels;
 
 public:
-    Texture() : texture(NULL), width(0), height(0), angle(0.0)
+    Texture() : texture(NULL), width(0), height(0), angle(0.0),
+                flip_mode(SDL_FLIP_NONE)
     { 
     }
 
@@ -46,7 +47,7 @@ public:
     bool load_from_file_streaming(SDL_Renderer *renderer, 
                                   std::string path, int c_r = -1, int c_g = -1, int c_b = -1);
 
-    void render(SDL_Renderer *renderer, int x = 0, int y = 0, SDL_Rect *clip = NULL);
+    virtual void render(SDL_Renderer *renderer, int x = 0, int y = 0, SDL_Rect *clip = NULL);
 
     void set_color_mod(Uint8 r, Uint8 g, Uint8 b)
     {

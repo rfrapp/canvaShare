@@ -129,7 +129,6 @@ void Texture::render(SDL_Renderer *renderer, int x, int y, SDL_Rect *clip)
         render_rect.h = clip->h;
     }
 
-
     SDL_RenderCopyEx(renderer, texture, clip, &render_rect, angle, NULL, flip_mode);
 }
 

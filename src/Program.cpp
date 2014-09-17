@@ -5,8 +5,6 @@ bool Program::initialize_program()
 {
 	if (!init())
 		return false;
-	if (!load_media())
-		return false;
 
 	return true; 
 }
@@ -36,7 +34,7 @@ bool Program::init()
         	// Create the renderer. This is what's used
         	// to draw things in SDL2.
 
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
             // Exit if there was an error creating the
             // renderer
@@ -48,9 +46,32 @@ bool Program::init()
             	// before drawing everthing else (i.e. the 'fill' color)
                 SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
             
+                //Initialize PNG loading
+                int imgFlags = IMG_INIT_PNG;
+                if( !( IMG_Init( imgFlags ) & imgFlags ) )
+                {
+                    printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+                    success = false;
+                }
+
+                 //Initialize SDL_ttf
+                if( TTF_Init() == -1 )
+                {
+                    printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+                    success = false;
+                }
+
+                if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+                {
+                    printf( "Warning: Linear texture filtering not enabled!" );
+                }
+            
                 // Set the canvas' renderer to the newly created
                 // one 
                 canvas.set_renderer(renderer);
+
+                if (!load_media())
+                    return false;
 
                 canvas.init_controls();
             }
@@ -65,6 +86,7 @@ bool Program::load_media()
 	bool success = true;
     
     // load fonts, imgs, etc here
+    canvas.load_media();
 
     return success;
 }
@@ -74,6 +96,8 @@ int Program::execute()
 	// Initialize SDL and load media
     if (!initialize_program())
     	return 1;
+
+    SDL_StartTextInput();
 
     // The main program loop
     while (!quit)
