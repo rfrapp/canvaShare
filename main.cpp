@@ -22,11 +22,24 @@ int main()
 
 	File f("blah.txt");
 
-	std::vector< std::string > v = f.get_lines();
+	std::vector< std::string > v = f.read_lines();
 
+	std::cout << "Lines: " << std::endl;
 	for (int i = 0; i < v.size(); i++)
 	{
 		std::cout << v[i] << std::endl;
+	}
+
+	std::cout << "Lines dellimitted: " << std::endl;
+	std::vector< std::vector< std::string > > v2;
+	v2 = f.get_lines_dellimitted('|');
+
+	for (int i = 0; i < v2.size(); i++)
+	{
+		std::cout << "- Line " << i << std::endl;
+		for (int j = 0; j < v2[i].size(); j++)
+			std::cout << v2[i][j] << " ";
+		std::cout << std::endl;
 	}
 
     return 0;
