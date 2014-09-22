@@ -55,7 +55,7 @@ public:
 	}
 
 	// Clsoe the file if it's open
-	void close() { if (stream.is_open() stream.close(); }
+	void close() { if (stream.is_open()) stream.close(); }
 
 	// Get a vector of 'lines' from the text file.
 	// Each line is designeted by a delimitting character

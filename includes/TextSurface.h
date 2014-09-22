@@ -64,165 +64,124 @@ public:
 		load_from_rendered_text(r);
 	}
 
-	void insert_text_at_index(SDL_Renderer *r, std::string str, int index)
+	void insert_text_at_index(SDL_Renderer *r, std::string str, int & index, int & current_line)
 	{
-		// std::cout << "index: " << index << std::endl;
+		std::string line = lines[current_line];
+		int new_index = 0; 
 
-		if (index >= length())
-			append_to_text(r, str);
-		else
+		line = line.insert(index, str);
+		lines[current_line] = line;
+
+		// Check if any of the lines exceeded the 
+		// width 
+		// get last word start and end of edited line
+		for (int j = current_line; j < lines.size(); j++)
 		{
-			int new_index = index;
-			int edited_index = get_line_for_index(index);
-			std::string line = lines[edited_index];
-
-			// remove stuff from left
-			for (int i = 0; i < edited_index; i++)
-				new_index -= lines[i].length();
-
-			// remove stuff from right
-			for (int i = lines.size() - 1; i > edited_index; i--)
+			if (lines[j].length() > max_chars_per_line)
 			{
-				new_index -= lines[i].length();
-			}
-
-			line = line.insert(new_index, str);
-			lines[edited_index] = line;
-
-			// Check if any of the lines exceeded the 
-			// width 
-			// get last word start and end of edited line
-			for (int j = edited_index; j < lines.size(); j++)
-			{
-				if (lines[j].length() > max_chars_per_line)
+				int last_word_start = -1;
+				for (int i = lines[j].length(); i >= 0; i--)
 				{
-					int last_word_start = -1;
-					for (int i = lines[j].length(); i >= 0; i--)
+					if (lines[j][i] == ' ')
 					{
-						if (lines[j][i] == ' ')
-							last_word_start = i;
+						last_word_start = i;
+						break;
 					}
-					
-					// The length of the edited line
-					int len = lines[edited_index].length();
-					int diff = len - last_word_start;
+				}
+				
+				// The length of the line
+				int len = lines[j].length();
+				int diff = len - last_word_start;
 
-					if (last_word_start != -1)
+				if (last_word_start != -1)
+				{
+					std::string substr = lines[j].substr(last_word_start + 1, len);
+					lines[j] = lines[j].erase(last_word_start, diff);
+
+					if (j == lines.size() - 1)
 					{
-						std::string substr = lines[j].substr(last_word_start + 1, len);
-						lines[j].erase(last_word_start, diff);
-
-						if (j == lines.size() - 1)
-							lines.push_back(substr + str);
-						else
-						{
-							lines[j + 1].insert(0, substr + str);
-						}
+						lines.push_back(substr);
+						new_index = substr.length() - 1;
 					}
 					else
 					{
-						if (j == lines.size() - 1)
-							lines.push_back(str);
-						else
-							lines[j + 1].insert(0, str);
+						lines[j + 1].insert(0, substr);
+						new_index = lines[j + 1].length() + substr.length() - 1;
 					}
 				}
-			}
+				else
+				{
+					std::cout << "j + 1: " << j + 1 
+							  << "lines.size() - 1: "
+							  << lines.size() - 1; 
 
-			load_from_rendered_text(r);
-		}
-	}
+					if (j == lines.size() - 1)
+					{
+						lines.push_back(str);
+						new_index = str.length() - 1;
+					}
+					else
+					{
+						lines[j + 1].insert(0, str);
+						new_index = lines[j + 1].length() + str.length();
+					}
+				}
 
-	void append_to_text(SDL_Renderer * r, std::string str)
-	{
-		int last_word_start = -1;
+				if (j == current_line)
+				{
+					current_line++;
+					index = new_index;
+				}
 
-		if (lines[lines.size() - 1].length() > max_chars_per_line)
-		{
-			// get last word start and end
-			for (int i = lines[lines.size() - 1].length(); i >= 0; i--)
-			{
-				if (lines[lines.size() - 1][i] == ' ')
-					last_word_start = i;
-			}
-			
-			// The length of the last line
-			int len = lines[lines.size() - 1].length();
-			int diff = len - last_word_start;
-			
-			// Wrap words 
-			if (last_word_start != -1)
-			{
-				std::string substr = lines[lines.size() - 1].substr(last_word_start + 1, len);
-				lines[lines.size() - 1].erase(last_word_start, diff);
-				lines.push_back(substr + str);
-			}
-			else
-			{
-				lines.push_back(str);
+				std::cout << std::endl << std::endl;
+				for (int k = 0; k < lines.size(); k++)
+					std::cout << k << " :" << lines[k] << std::endl;
+				std::cout << std::endl << std::endl;
+
 			}
 		}
-		else
-			lines[lines.size() - 1] += str;
 
 		load_from_rendered_text(r);
 	}
 
-	void remove_char_at(SDL_Renderer *r, int index)
+	void remove_char_at(SDL_Renderer *r, int & index, int & current_line)
 	{
-		if (index == length() - 1)
-			pop(r);
-		else
+		std::string line = lines[current_line];
+
+		std::cout << "index: " << index << std::endl;
+		std::cout << "line: " << current_line << std::endl;
+
+		if (index >= 0)
 		{
-			int new_index = index;
-			int edited_index = get_line_for_index(index);
-			std::string line = lines[edited_index];
-
-			// remove stuff from left
-			for (int i = 0; i < edited_index; i++)
-				new_index -= lines[i].length();
-
-			// remove stuff from right
-			for (int i = lines.size() - 1; i > edited_index; i--)
-			{
-				new_index -= lines[i].length();
-			}
-			std::cout << "new_index: " << new_index << std::endl;
-
-			if (new_index == -1 && edited_index > 0)
-			{
-				edited_index--;
-				new_index = lines[edited_index].length() - 1;
-				line = lines[edited_index];
-			}
-
-			if (line.length() > 1)
-				line = line.erase(new_index, 1);
-			else
-				line = "";
-
-			lines[edited_index] = line;
-
-			// Check if the edited line is an empty
-			// string. If so, remove it
-			if (lines[edited_index] == "")
-				lines.pop_back();
-
-			load_from_rendered_text(r);
+			line = line.erase(index, 1);
+			lines[current_line] = line;
 		}
-	}
+		else // The user hit delete on the beginning of a line
+		{
+			if (current_line - 1 >= 0)
+			{
+				if (lines[current_line - 1].length() 
+					+ lines[current_line].length()
+					< max_chars_per_line)
+				{
+					lines[current_line - 1] += lines[current_line];
+					index = lines[current_line - 1].length() - lines[current_line].length();
+					std::cout << "index after mod: " << index << std::endl;
+					lines[current_line] = "";
 
-	void pop(SDL_Renderer * r)
-	{
-		int len = lines[lines.size() - 1].length();
+					// shift every other line down 1
+					for (int i = current_line + 1; i < lines.size(); i++)
+						lines[i - 1] = lines[i];
 
-		if (len != 0)
-			lines[lines.size() - 1].erase(len - 1, 1);
-		else
-			lines.pop_back();
+					if (current_line == lines.size() - 1)
+						lines.pop_back();
 
+					current_line--;
+				}
+			}
+		}
 
-		load_from_rendered_text(r);
+		load_from_rendered_text(r);	
 	}
 
 	void add_newline() { lines.push_back(""); }
@@ -230,11 +189,10 @@ public:
 	std::string text() const 
 	{ 
 		std::string lines_text = "";
-		for (int i = 0; i < lines.size() - 1; i++)
+		for (int i = 0; i < lines.size(); i++)
 		{
 			lines_text += lines[i];
 		}
-		lines_text += lines[lines.size() - 1];
 
 		return lines_text;
 	}
