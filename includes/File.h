@@ -21,6 +21,8 @@ private:
 	// (i.e. read/write permission)
 	int mode;
 
+	std::vector< std::string > lines;
+
 public:
 
 	// Initialize the mode to read and write
@@ -63,8 +65,7 @@ public:
 	// new lines)
 	std::vector< std::string > get_lines(char del='\n')
 	{
-		// Create the vector for the lines
-		std::vector< std::string > lines; 
+		lines.clear();
 
 		// Create a placeholder to hold each line
 		std::string line = "";
