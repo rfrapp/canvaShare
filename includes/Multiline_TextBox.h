@@ -79,7 +79,7 @@ public:
 	        if (e->key.keysym.sym == SDLK_RETURN)
 	        {
 	        	// Add a new line to the TextSurface
-	        	surface.add_newline();
+	        	surface.add_newline(renderer, cursor_pos, current_line);
 
 	        	// Set the cursor to the TextBox's far-left
 	        	// bound and add the length of a line to the

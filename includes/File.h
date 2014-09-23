@@ -12,7 +12,7 @@ class File
 {
 private:
 	
-	// File stream, used for file operations 
+	// File strea, used for file operations 
 	std::fstream write_stream;
 
 	std::fstream read_stream;
@@ -98,9 +98,12 @@ public:
 		return lines;
 	}
 
-	std::vector< std::vector< std::string > > get_lines_dellimitted(char del=' ')
+	std::vector< std::vector< std::string > > get_lines_delimited(char del=' ')
 	{
 		std::vector< std::vector< std::string > > v;
+
+		if (lines.size() == 0)
+			read_lines();
 
 		for (int i = 0; i < lines.size(); i++)
 		{

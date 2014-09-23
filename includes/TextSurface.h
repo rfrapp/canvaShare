@@ -184,7 +184,26 @@ public:
 		load_from_rendered_text(r);	
 	}
 
-	void add_newline() { lines.push_back(""); }
+	void add_newline(SDL_Renderer *r, int index, int line) 
+	{ 
+		lines.push_back(""); 
+
+		if (index != lines[line].size())
+		{
+			std::string str = "";
+
+			for (int i = index; i < lines[line].size(); i++)
+			{
+				str += lines[line][i];
+			}
+
+			lines[line].erase(index, str.length());
+
+			lines[lines.size() - 1] = str;
+
+			load_from_rendered_text(r);
+		}
+	}
 
 	std::string text() const 
 	{ 
