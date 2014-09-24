@@ -14,13 +14,15 @@ private:
 	int w, h, font_size;
 	int max_w, max_h;
 	int max_chars_per_line;
+	int visible_line_start, visible_line_end;
 	bool font_created;
 	Font *font;
 	std::vector< std::string > lines;
 	SDL_Color text_color;
 
 public:
-	TextSurface(std::string font_path, int fs, int maxw, int maxh, int r=0, int g=0, int b=0)
+	TextSurface(std::string font_path, int fs, int maxw, int maxh, 
+		        int r=0, int g=0, int b=0)
 	 : font_size(fs), x(0), y(0), max_w(maxw), max_h(maxh),
 	   max_chars_per_line(0), font_created(true)
 	{

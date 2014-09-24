@@ -98,6 +98,43 @@ public:
 		        	cursor_pos = 0; 	
 		        }
 
+		        if (e->key.keysym.sym == SDLK_UP)
+		        {
+		        	if (current_line > 0)
+		        	{
+		        		// Move the cursor up a line 
+		        		cursor_rect.y -= surface.get_font()->get_line_height();
+
+		        		current_line--;
+
+		        		// Get the current line
+		        		std::string line = surface.get_lines()[current_line];
+
+		        		if (cursor_pos > line.length())
+		        		{
+		        			cursor_rect.x = bounding_rect.x + surface.get_font()->get_width(line.c_str());
+		        			cursor_pos = line.length();
+		        		}
+		        	}
+		        }
+
+		        if (e->key.keysym.sym == SDLK_DOWN)
+		        {
+		        	if (current_line < surface.get_lines().size() - 1)
+		        	{
+		        		current_line++;
+
+		        		cursor_rect.y += surface.get_font()->get_line_height();
+		        		std::string line = surface.get_lines()[current_line];
+
+		        		if (cursor_pos > line.length())
+		        		{
+		        			cursor_pos = line.length();
+		        			cursor_rect.x = bounding_rect.x + surface.get_font()->get_width(line.c_str());
+		        		}
+		        	}
+		        }
+
 		        if (e->key.keysym.sym == SDLK_LEFT)
 		        {
 	        		// If the cursor is not at the far
@@ -145,9 +182,7 @@ public:
 		        			// Change the current line to the next one
 		        			current_line++;
 
-		        			// Subtract one from the cursor position to
-		        			// compensate for the line change
-		        			cursor_pos--;
+		        			cursor_pos = 0;
 
 		        			// Set the cursor x to the left bound of the
 		        			// textbox
