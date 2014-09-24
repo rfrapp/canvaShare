@@ -49,7 +49,19 @@ public:
 	// Handle input while the control has focus. Can be
 	// overridden to handle different inputs differently
 	// depending on the control 
-	virtual void handle_input(SDL_Event *e) {  }
+	virtual void handle_input(SDL_Event *e) 
+	{ 
+		if (e->type == SDL_MOUSEBUTTONDOWN)
+		{
+			int x, y;
+			SDL_GetMouseState(&x, &y);
+
+			if (bounding_rect.collide_point(x, y))
+				focus = true;
+			else
+				focus = false;
+		}
+	}
 
 	// ========================================================================
 	// Getters 
