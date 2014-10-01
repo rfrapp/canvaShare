@@ -218,6 +218,7 @@ public:
 					+ lines[current_line].length()
 					< max_chars_per_line)
 				{
+					std::cout << "blah" << std::endl;
 					lines[current_line - 1] += lines[current_line];
 					index = lines[current_line - 1].length() - lines[current_line].length();
 					std::cout << "index after mod: " << index << std::endl;
@@ -231,6 +232,13 @@ public:
 						lines.pop_back();
 
 					current_line--;
+				}
+				else if (index == -1)
+				{
+					std::cout << "I am here!!!" << std::endl;
+					lines.pop_back();
+					current_line--;
+					index = lines[current_line].length();
 				}
 			}
 		}

@@ -177,11 +177,26 @@ public:
 		        	{
 		        		std::string c = "a";
 
-		        		// Subtract the width of that character from the 
-		        		// cursor rectangle's position
-		        		cursor_rect.x -= surface.get_font()->get_width(c.c_str());
-
 		        		cursor_pos--;
+
+		        		if (multiline)
+		        		{
+		        			// Subtract the width of that character from the 
+		        			// cursor rectangle's position
+		        			cursor_rect.x -= surface.get_font()->get_width(c.c_str());
+		        		}
+		        		else
+		        		{
+		        			if (cursor_pos == surface.get_visible_char_start() - 1)
+			        		{
+			        			surface.set_visible_char_start(cursor_pos);
+			        			surface.reload(renderer);
+
+			        			cursor_rect.x = bounding_rect.x;
+			        		}
+			        		else
+		        				cursor_rect.x -= surface.get_font()->get_width(c.c_str());
+		        		}
 		        	}
 		        	else // The user hit the left arrow at the beginning of a line
 		        	{
