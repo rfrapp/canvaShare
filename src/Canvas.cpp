@@ -28,8 +28,8 @@ void Canvas::init_controls()
 {
 	// Button *b = new Button(renderer, 30, 30, 100, 100, "", 
 	// 	        "images/SVG-icons.png", 4, 6, 30, 30);
-	Multiline_TextBox *t = new Multiline_TextBox(renderer, font, w - 20, h - 20, 10, 10,
-		                                         true, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 
+	TextBox *t = new TextBox(renderer, font, w - 20, h - 20, 10, 10,
+		                                         true, false, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 
 		                                         0xBB, 0xBB, 0xBB);
 
 	controls.push_back(t);

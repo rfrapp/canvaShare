@@ -9,7 +9,7 @@
 
 #include "Control.h"
 #include "Button.h"
-#include "Multiline_TextBox.h"
+#include "TextBox.h"
 
 class Canvas
 {

@@ -14,17 +14,22 @@ private:
 	int w, h, font_size;
 	int max_w, max_h;
 	int max_chars_per_line;
+	int max_lines;
 	int visible_line_start, visible_line_end;
+	int visible_char_start, visible_char_end;
 	bool font_created;
+	bool multiline;
 	Font *font;
 	std::vector< std::string > lines;
 	SDL_Color text_color;
 
 public:
 	TextSurface(std::string font_path, int fs, int maxw, int maxh, 
-		        int r=0, int g=0, int b=0)
+		        bool multi_line=true, int r=0, int g=0, int b=0)
 	 : font_size(fs), x(0), y(0), max_w(maxw), max_h(maxh),
-	   max_chars_per_line(0), font_created(true)
+	   max_chars_per_line(0), font_created(true), multiline(true),
+	   max_lines(0), visible_line_start(0), visible_line_end(0),
+	   visible_char_start(0), visible_char_end(0)
 	{
 		font = new Font(font_path.c_str(), font_size);
 
@@ -37,11 +42,14 @@ public:
 		int _w, _h;
 		TTF_SizeText(font->get_ttf(), "a", &_w, &_h);
 		max_chars_per_line = (max_w / _w) - 1;
+		max_lines = (max_h / _h) - 1;
 	}
 
-	TextSurface(Font *f, int maxw, int maxh, int _x=0, int _y=0, int r=0, int g=0, int b=0) 
+	TextSurface(Font *f, int maxw, int maxh, int _x=0, int _y=0, bool multi_line=true, int r=0, int g=0, int b=0) 
 	           : font(f), x(_x), y(_y), max_w(maxw), max_h(maxh),
-	             max_chars_per_line(0), font_created(false)
+	             max_chars_per_line(0), font_created(false), visible_line_start(0), visible_line_end(0),
+				 multiline(multi_line),
+	   			 visible_char_start(0), visible_char_end(0)
 	{
 		text_color.r = r;
 		text_color.g = g;
@@ -51,9 +59,12 @@ public:
 		int _w, _h;
 		TTF_SizeText(font->get_ttf(), "a", &_w, &_h);
 		max_chars_per_line = (max_w / _w) - 1;
+		max_lines = (max_h / _h) - 1;	
 	}
 
 	~TextSurface() { if (font_created) font->destroy(); }
+
+	void reload(SDL_Renderer *r) { load_from_rendered_text(r); }
 
 	void render(SDL_Renderer *renderer)
 	{
@@ -70,79 +81,111 @@ public:
 	{
 		std::string line = lines[current_line];
 		int new_index = 0; 
+		bool added_line = false;
 
 		line = line.insert(index, str);
 		lines[current_line] = line;
 
-		// Check if any of the lines exceeded the 
-		// width 
-		// get last word start and end of edited line
-		for (int j = current_line; j < lines.size(); j++)
+		if (multiline)
 		{
-			if (lines[j].length() > max_chars_per_line)
+			// Check if any of the lines exceeded the 
+			// width 
+			// get last word start and end of edited line
+			for (int j = current_line; j < lines.size(); j++)
 			{
-				int last_word_start = -1;
-				for (int i = lines[j].length(); i >= 0; i--)
+				if (lines[j].length() > max_chars_per_line)
 				{
-					if (lines[j][i] == ' ')
+					int last_word_start = -1;
+					for (int i = lines[j].length(); i >= 0; i--)
 					{
-						last_word_start = i;
-						break;
+						if (lines[j][i] == ' ')
+						{
+							last_word_start = i;
+							break;
+						}
+					}
+					
+					// The length of the line
+					int len = lines[j].length();
+					int diff = len - last_word_start;
+
+					// If a word was found and needs
+					// to be wrapped
+					if (last_word_start != -1)
+					{
+						// get the word
+						std::string substr = lines[j].substr(last_word_start + 1, len);
+						
+						// erase the word from the line
+						lines[j] = lines[j].erase(last_word_start, diff);
+
+						// If inserting there is line after 
+						// the current one
+						if (j == lines.size() - 1)
+						{
+							// Insert a new line containing
+							// that wrapped word
+							lines.push_back(substr);
+
+							// move the cursor to the substring
+							// length - 1
+							new_index = substr.length() - 1;
+						}
+						else // There is a line after the current one
+						{
+							// Add the wrapped word to that
+							// line 
+							lines[j + 1].insert(0, substr);
+							new_index = substr.length() - 1;
+						}
+					}
+					else // No word to be wrapped
+					{
+						if (j == lines.size() - 1)
+						{
+							lines.push_back(str);
+							new_index = str.length() - 1;
+						}
+						else
+						{
+							lines[j + 1].insert(0, str);
+							new_index = lines[j + 1].length() + str.length();
+						}
+					}
+
+					// A new line was created. so
+					// increase the current line by 1
+					// and change the cursor position to
+					// the new one 
+					if (j == current_line)
+					{
+						current_line++;
+						index = new_index;
+						added_line = true;
 					}
 				}
-				
-				// The length of the line
-				int len = lines[j].length();
-				int diff = len - last_word_start;
+			}
 
-				if (last_word_start != -1)
-				{
-					std::string substr = lines[j].substr(last_word_start + 1, len);
-					lines[j] = lines[j].erase(last_word_start, diff);
+			if (added_line)
+			{
+				visible_line_end = lines.size() - 1;
 
-					if (j == lines.size() - 1)
-					{
-						lines.push_back(substr);
-						new_index = substr.length() - 1;
-					}
-					else
-					{
-						lines[j + 1].insert(0, substr);
-						new_index = lines[j + 1].length() + substr.length() - 1;
-					}
-				}
-				else
-				{
-					std::cout << "j + 1: " << j + 1 
-							  << "lines.size() - 1: "
-							  << lines.size() - 1; 
+				if (visible_line_end > max_lines)
+					visible_line_start++;
+			}
+		}
+		else
+		{
+			visible_char_end++;
 
-					if (j == lines.size() - 1)
-					{
-						lines.push_back(str);
-						new_index = str.length() - 1;
-					}
-					else
-					{
-						lines[j + 1].insert(0, str);
-						new_index = lines[j + 1].length() + str.length();
-					}
-				}
-
-				if (j == current_line)
-				{
-					current_line++;
-					index = new_index;
-				}
-
-				std::cout << std::endl << std::endl;
-				for (int k = 0; k < lines.size(); k++)
-					std::cout << k << " :" << lines[k] << std::endl;
-				std::cout << std::endl << std::endl;
-
+			if (lines[0].length() > max_chars_per_line)
+			{
+				visible_char_start++;
 			}
 		}
 
+		// Recreate the surface for the
+		// text 
 		load_from_rendered_text(r);
 	}
 
@@ -150,13 +193,22 @@ public:
 	{
 		std::string line = lines[current_line];
 
-		std::cout << "index: " << index << std::endl;
-		std::cout << "line: " << current_line << std::endl;
+		// std::cout << "index: " << index << std::endl;
+		// std::cout << "line: " << current_line << std::endl;
 
 		if (index >= 0)
 		{
 			line = line.erase(index, 1);
 			lines[current_line] = line;
+
+			if (!multiline)
+			{
+				if (visible_char_end > 0)
+					visible_char_end--;
+
+				if (visible_char_start > 0)
+					visible_char_start--;
+			}
 		}
 		else // The user hit delete on the beginning of a line
 		{
@@ -202,9 +254,14 @@ public:
 			lines[line].erase(index, str.length());
 
 			lines[lines.size() - 1] = str;
-
-			load_from_rendered_text(r);
 		}
+
+		visible_line_end++;
+	
+		if (visible_line_end > max_lines)
+			visible_line_start++;
+
+		load_from_rendered_text(r);
 	}
 
 	std::string text() const 
@@ -247,32 +304,19 @@ public:
 		return str;
 	}
 
-	int get_line_for_index(int index)
-	{
-		int found_index = -1;
-		int c = 0;
-
-		for (int i = 0; i < lines.size(); i++)
-		{
-			for (int j = 0; j < lines[i].length(); j++)
-			{
-				if (c == index)
-				{
-					found_index = i;
-					break;
-				}
-				c++;
-			}
-		}
-
-		if (index == length())
-			found_index = lines.size() - 1;
-
-		return found_index;
-	}
-
 	void set_x(int _x) { x = _x; }
 	void set_y(int _y) { y = _y; }
+	void set_visible_start(int s) { visible_line_start = s; }
+	void set_visible_end(int s) { visible_line_end = s; }
+	void set_visible_char_start(int s) { visible_char_start = s; }
+	void set_visible_char_end(int s) { visible_char_end = s; }
+
+	int get_max_lines() const { return max_lines; }
+	int get_max_chars_per_line() const { return max_chars_per_line; }
+	int get_visible_start() const { return visible_line_start; }
+	int get_visible_end() const { return visible_line_end; }
+	int get_visible_char_start() const { return visible_char_start; }
+	int get_visible_char_end() const { return visible_char_end; }
 
 	bool load_from_rendered_text(SDL_Renderer * r);
 
