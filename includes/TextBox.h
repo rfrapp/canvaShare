@@ -76,7 +76,6 @@ public:
 			{
 				if (e->key.keysym.sym == SDLK_BACKSPACE && surface.length() > 0)
 		        {
-
 		            // lop off character
 		            cursor_pos--;
 		            std::cout << "cursor pos: " << cursor_pos << std::endl;
@@ -87,27 +86,30 @@ public:
 		        	if (multiline)
 		            	cursor_rect.x = bounding_rect.x + cursor_pos * surface.get_font()->get_width(c.c_str());
 		            else
-		           		cursor_rect.x = bounding_rect.x + (surface.get_visible_char_end() - surface.get_visible_char_start()) * surface.get_font()->get_width(&e->text.text[0]);
+		           		cursor_rect.x = bounding_rect.x + (cursor_pos - surface.get_visible_char_start()) * surface.get_font()->get_width(&e->text.text[0]);
 
 		            cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
 		        }
 
 		        if (e->key.keysym.sym == SDLK_RETURN)
 		        {
-		        	// Add a new line to the TextSurface
-		        	surface.add_newline(renderer, cursor_pos, current_line);
+		        	if (multiline)
+		        	{
+			        	// Add a new line to the TextSurface
+			        	surface.add_newline(renderer, cursor_pos, current_line);
 
-		        	// Set the cursor to the TextBox's far-left
-		        	// bound and add the length of a line to the
-		        	// cursor's y 
-		        	cursor_rect.x = bounding_rect.x; 
+			        	// Set the cursor to the TextBox's far-left
+			        	// bound and add the length of a line to the
+			        	// cursor's y 
+			        	cursor_rect.x = bounding_rect.x; 
 
-		        	if (cursor_rect.y + surface.get_font()->get_line_height()
-		        		<= bounding_rect.y + bounding_rect.h)
-		        		cursor_rect.y += surface.get_font()->get_line_height();
-		        	
-		        	current_line++;
-		        	cursor_pos = 0; 	
+			        	if (cursor_rect.y + surface.get_font()->get_line_height()
+			        		<= bounding_rect.y + bounding_rect.h)
+			        		cursor_rect.y += surface.get_font()->get_line_height();
+			        	
+			        	current_line++;
+			        	cursor_pos = 0; 
+		        	}	
 		        }
 
 		        if (e->key.keysym.sym == SDLK_UP)
@@ -190,6 +192,7 @@ public:
 		        			if (cursor_pos == surface.get_visible_char_start() - 1)
 			        		{
 			        			surface.set_visible_char_start(cursor_pos);
+			        			surface.set_visible_char_end(surface.get_visible_char_end() - 1);
 			        			surface.reload(renderer);
 
 			        			cursor_rect.x = bounding_rect.x;
@@ -223,33 +226,51 @@ public:
 		        		// Get the text for the current line 
 		        		std::string line = surface.get_lines()[current_line];
 
-		        		// Check if the user pressed the right arrow key
-		        		// and the cursor is at the end of the current
-		        		// line 
-		        		if (cursor_rect.x == bounding_rect.x + surface.get_font()->get_width(line.c_str()))
+		        		if (multiline)
 		        		{
-		        			// Change the current line to the next one
-		        			current_line++;
+			        		// Check if the user pressed the right arrow key
+			        		// and the cursor is at the end of the current
+			        		// line 
+			        		if (cursor_rect.x == bounding_rect.x + surface.get_font()->get_width(line.c_str()))
+			        		{
+			        			// Change the current line to the next one
+			        			current_line++;
 
-		        			cursor_pos = 0;
+			        			cursor_pos = 0;
 
-		        			// Set the cursor x to the left bound of the
-		        			// textbox
-		        			cursor_rect.x = bounding_rect.x;
+			        			// Set the cursor x to the left bound of the
+			        			// textbox
+			        			cursor_rect.x = bounding_rect.x;
 
-		        			// Set the cursor y to the y value of the 
-		        			// current line 
-		        			cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
-		        		}
-		        		else // If the cursor is not at the right end of the line
-		        		{
-		        			// Get the character before the current position 
-		        			std::string c = surface.get_char_at_index(cursor_pos - 1);
+			        			// Set the cursor y to the y value of the 
+			        			// current line 
+			        			cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
+			        		}
+			        		else // If the cursor is not at the right end of the line
+			        		{
+			        			// Get the character before the current position 
+			        			std::string c = "a";
 
-		        			// Add the width of that character to the cursor's x 
-		        			// value 
-		        			cursor_rect.x += surface.get_font()->get_width(c.c_str());
-		        		}
+			        			// Add the width of that character to the cursor's x 
+			        			// value 
+			        			cursor_rect.x += surface.get_font()->get_width(c.c_str());
+			        		}
+			        	}
+			        	else
+			        	{
+			        		std::string c = "a";
+
+			        		if (cursor_pos == surface.get_visible_char_end() + 1)
+			        		{
+			        			surface.set_visible_char_end(cursor_pos);
+			        			surface.set_visible_char_start(surface.get_visible_char_start() + 1);
+			        			surface.reload(renderer);
+
+			        			cursor_rect.x = bounding_rect.x + bounding_rect.w;
+			        		}
+			        		else
+		        				cursor_rect.x += surface.get_font()->get_width(c.c_str());
+			        	}
 
 		        		// std::cout << "cursor_pos in right: " << cursor_pos << std::endl;
 		        	}
@@ -274,7 +295,7 @@ public:
 		  			else 
 		  			{
 		  				if (cursor_pos > surface.get_max_chars_per_line())
-		            		cursor_rect.x = bounding_rect.x + (surface.get_visible_char_end() - surface.get_visible_char_start()) * surface.get_font()->get_width(&e->text.text[0]);
+		            		cursor_rect.x = bounding_rect.x + (cursor_pos - surface.get_visible_char_start()) * surface.get_font()->get_width(&e->text.text[0]);
 		  				else
 		  				{
 			            	cursor_rect.x = bounding_rect.x + cursor_pos * surface.get_font()->get_width(&e->text.text[0]);
