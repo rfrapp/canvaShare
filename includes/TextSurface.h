@@ -198,16 +198,27 @@ public:
 
 		if (index >= 0)
 		{
+			std::cout << "line before: " << line << std::endl;
 			line = line.erase(index, 1);
 			lines[current_line] = line;
+			std::cout << "line after: " << line << std::endl;
 
 			if (!multiline)
 			{
-				if (visible_char_end > 0)
-					visible_char_end--;
+				std::string s = "";
+
+				for (int i = visible_char_start; i < visible_char_end; i++)
+					s += line[i];
+
+				std::cout << visible_char_start << ' ' << visible_char_end << ": " << s << std::endl;
+
+				// if (visible_char_end > 0)
+				// 	visible_char_end--;
 
 				if (visible_char_start > 0)
 					visible_char_start--;
+
+				std::cout << visible_char_start << ' ' << visible_char_end << ": " << s << std::endl;
 			}
 		}
 		else // The user hit delete on the beginning of a line

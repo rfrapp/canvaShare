@@ -78,7 +78,7 @@ public:
 		        {
 		            // lop off character
 		            cursor_pos--;
-		            std::cout << "cursor pos: " << cursor_pos << std::endl;
+		            // std::cout << "cursor pos: " << cursor_pos << std::endl;
 		            surface.remove_char_at(renderer, cursor_pos, current_line);
 
 		            std::string c = "a";
@@ -310,6 +310,8 @@ public:
 		    }
 		}
 	}
+
+	std::string text() const { return surface.text(); }
 };
 
 #endif 
