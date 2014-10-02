@@ -13,7 +13,7 @@ class Button : public Control
 {
 private:
 	std::string label;
-
+	int id; 
 	Texture bg_img;
 	Rect    img_clip;
 
@@ -28,6 +28,7 @@ public:
 			  label(l), bg_img(Texture()), 
 			  img_clip(Rect(clip_x, clip_y, clip_w, clip_h))
 	{
+
 		bg_img.load_from_file(renderer, img_path, 255, 255, 255);
 	}
 
