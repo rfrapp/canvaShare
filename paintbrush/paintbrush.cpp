@@ -1,6 +1,11 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <vector>
 #include "SDL2_gfxPrimitives.h"
+struct pos
+{
+    int x,y;
+};
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -59,9 +64,12 @@ bool init()
 }
 
 
-
 int main()
-{
+{ 
+    std::vector< std::vector< pos > > strokes;
+    std::vector< pos > tmp;
+    int x, y;
+    bool press = false;
 
 	init();
 	// Initialize SDL and load media
@@ -79,6 +87,30 @@ int main()
         	// the program
             if (e.type == SDL_QUIT)
                 quit = true;
+
+            else if(e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                SDL_GetMouseState(&x,&y);
+                press = true;
+                pos p = {x,y};
+                tmp.clear();
+                tmp.push_back(p);
+            }
+            else if(e.type == SDL_MOUSEMOTION && press == true)
+            {
+                SDL_GetMouseState(&x,&y);
+                if(strokes.size() - 1 != x && strokes.size() - 1 != y)
+                {
+                    pos p = {x,y};
+                    tmp.push_back(p);
+                }
+            }
+            else if(e.type == SDL_MOUSEBUTTONUP)
+            {
+                press = false;
+                strokes.push_back(tmp);
+                //tmp.clear();
+            }
         }
 
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -88,6 +120,21 @@ int main()
         SDL_RenderClear(renderer);
 
         // Draw code goes here
+        std::cout << tmp.size() << "\n";
+        for(int i = 0; i < strokes.size(); i++)
+        {
+            for(int j = 0; j < strokes[i].size(); j++)
+            {
+                filledCircleRGBA(renderer, strokes[i][j].x, 
+                           strokes[i][j].y, 5, 0, 0, 0, 255);
+            }
+        }
+
+        for(int i = 0; i < strokes.size(); i++)
+        {
+            filledCircleRGBA(renderer, tmp[i].x, 
+                           tmp[i].y, 5, 0, 0, 0, 255);
+        }
         //canvas.draw();
 
         // Update the screen with the newly drawn content
