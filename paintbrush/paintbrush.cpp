@@ -99,11 +99,8 @@ int main()
             else if(e.type == SDL_MOUSEMOTION && press == true)
             {
                 SDL_GetMouseState(&x,&y);
-                if(strokes.size() - 1 != x && strokes.size() - 1 != y)
-                {
-                    pos p = {x,y};
-                    tmp.push_back(p);
-                }
+                pos p = {x,y};
+                tmp.push_back(p);
             }
             else if(e.type == SDL_MOUSEBUTTONUP)
             {
