@@ -117,7 +117,7 @@ int main()
         SDL_RenderClear(renderer);
 
         // Draw code goes here
-        std::cout << tmp.size() << "\n";
+        //std::cout << tmp.size() << "\n";
         for(int i = 0; i < strokes.size(); i++)
         {
             for(int j = 0; j < strokes[i].size(); j++)
@@ -127,7 +127,7 @@ int main()
             }
         }
 
-        for(int i = 0; i < strokes.size(); i++)
+        for(int i = 0; i < tmp.size(); i++)
         {
             filledCircleRGBA(renderer, tmp[i].x, 
                            tmp[i].y, 5, 0, 0, 0, 255);
