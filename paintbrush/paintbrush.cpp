@@ -4,7 +4,7 @@
 #include "SDL2_gfxPrimitives.h"
 struct pos
 {
-    int x,y;
+    int x,y,brush_size;
 };
 
 SDL_Window *window;
@@ -68,8 +68,11 @@ int main()
 { 
     std::vector< std::vector< pos > > strokes;
     std::vector< pos > tmp;
-    int x, y;
+
+    int x, y, brush_size;
+    brush_size = 3;
     bool press = false;
+    // Movement and Buttons
 
 	init();
 	// Initialize SDL and load media
@@ -92,14 +95,14 @@ int main()
             {
                 SDL_GetMouseState(&x,&y);
                 press = true;
-                pos p = {x,y};
+                pos p = {x,y,brush_size};
                 tmp.clear();
                 tmp.push_back(p);
             }
             else if(e.type == SDL_MOUSEMOTION && press == true)
             {
                 SDL_GetMouseState(&x,&y);
-                pos p = {x,y};
+                pos p = {x,y,brush_size};
                 tmp.push_back(p);
             }
             else if(e.type == SDL_MOUSEBUTTONUP)
@@ -107,6 +110,14 @@ int main()
                 press = false;
                 strokes.push_back(tmp);
                 //tmp.clear();
+            }
+            else if(e.key.keysym.sym == SDLK_l && brush_size < 15)
+            {
+            	brush_size++;
+            }
+            else if(e.key.keysym.sym == SDLK_k && brush_size > 0)
+            {
+            	brush_size--;
             }
         }
 
@@ -117,20 +128,23 @@ int main()
         SDL_RenderClear(renderer);
 
         // Draw code goes here
+<<<<<<< HEAD
+=======
         //std::cout << tmp.size() << "\n";
+>>>>>>> 42e08e29de29352d5d13dead0372a5fec1ed0ea6
         for(int i = 0; i < strokes.size(); i++)
         {
             for(int j = 0; j < strokes[i].size(); j++)
             {
                 filledCircleRGBA(renderer, strokes[i][j].x, 
-                           strokes[i][j].y, 5, 0, 0, 0, 255);
+                           strokes[i][j].y, strokes[i][j].brush_size, 0, 0, 0, 255);
             }
         }
 
         for(int i = 0; i < tmp.size(); i++)
         {
             filledCircleRGBA(renderer, tmp[i].x, 
-                           tmp[i].y, 5, 0, 0, 0, 255);
+                           tmp[i].y, tmp[i].brush_size, 0, 0, 0, 255);
         }
         //canvas.draw();
 
