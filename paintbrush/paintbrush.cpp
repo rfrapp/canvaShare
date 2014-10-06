@@ -11,7 +11,7 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Event e;
 
-int screen_width = 640, screen_height = 480;
+int screen_width = 1040, screen_height = 768;
 
 bool init()
 {
@@ -30,6 +30,13 @@ bool init()
         window = SDL_CreateWindow("canvaShare", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                   screen_width, screen_height, SDL_WINDOW_SHOWN);
 
+        //Declare SDL_Surface pointers
+
+        SDL_Surface *cursor;
+        SDL_Surface *image;
+
+        SDL_ShowCursor( SDL_DISABLE );
+        
         // If the window was not created, 
         // then there was an error
         if (window == NULL)
@@ -126,12 +133,10 @@ int main()
         // Clear the screen by drawing over the previous
         // frame with the RenderClearColor 
         SDL_RenderClear(renderer);
-
+        SDL_GetMouseState(&x,&y);
+        filledCircleRGBA(renderer, x, 
+                         y, brush_size, 0, 0, 0, 255);
         // Draw code goes here
-<<<<<<< HEAD
-=======
-        //std::cout << tmp.size() << "\n";
->>>>>>> 42e08e29de29352d5d13dead0372a5fec1ed0ea6
         for(int i = 0; i < strokes.size(); i++)
         {
             for(int j = 0; j < strokes[i].size(); j++)
