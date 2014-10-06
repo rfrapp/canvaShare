@@ -134,7 +134,7 @@ int main()
         // frame with the RenderClearColor 
         SDL_RenderClear(renderer);
         SDL_GetMouseState(&x,&y);
-        filledCircleRGBA(renderer, x, 
+        circleRGBA(renderer, x, 
                          y, brush_size, 0, 0, 0, 255);
         // Draw code goes here
         for(int i = 0; i < strokes.size(); i++)

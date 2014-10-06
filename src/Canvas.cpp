@@ -26,11 +26,11 @@ bool Canvas::load_media()
 
 void Canvas::init_controls()
 {
-	Button *b = new Button(renderer, 30, 30, 100, 100, "", 
-		        "images/icons.png", 4, 6, 30, 30);
+	Button *b = new Button(renderer, 29, 26, 0, 0, "", 
+		        "images/icons.png", 996, 692, 29, 26);
 	// TextBox *t = new TextBox(renderer, font, 200, h - 20, 10, 10,
 	// 	                                         true, false, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 
 	// 	                                         0xBB, 0xBB, 0xBB);
-
 	//controls.push_back(t);
+	controls.push_back(b);
 }

@@ -28,7 +28,6 @@ public:
 			  label(l), bg_img(Texture()), 
 			  img_clip(Rect(clip_x, clip_y, clip_w, clip_h))
 	{
-
 		bg_img.load_from_file(renderer, img_path, 255, 255, 255);
 	}
 
@@ -38,7 +37,7 @@ public:
 	Texture     get_bg_img() const { return bg_img; }
 
 	void set_label(std::string s) { label = s;    }
-
+	void set_pos(int x, int y) { bounding_rect.x = x; bounding_rect.y = y; }
 	void handle_input(SDL_Event *e);
 };
 
