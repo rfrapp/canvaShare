@@ -1,5 +1,5 @@
 
-#ifdef PAINTBRUSHTOOL_H
+#ifndef PAINTBRUSHTOOL_H
 #define PAINTBRUSHTOOL_H
 
 #include "Tool.h"
@@ -22,11 +22,11 @@ public:
 	{
 	}
 
-	~PaintBrushTool();
+	~PaintBrushTool() { }
 	
-	void handle_input(SDL_Event *e);
-	void draw();
-	void on_activate();
+	void handle_input(SDL_Event *e) {  }
+	void draw() { }
+	void on_activate() { }
 
 };
 

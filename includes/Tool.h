@@ -17,9 +17,9 @@ public:
 
 	~Tool() {  }
 
-	virtual void draw() {  }
-	virtual void on_activate() {  }
-	virtual void handle_input(SDL_Event *e) {  }
+	virtual void draw() = 0;
+	virtual void on_activate() = 0;
+	virtual void handle_input(SDL_Event *e) = 0;
 };
 
 #endif 
