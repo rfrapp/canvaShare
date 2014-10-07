@@ -1,5 +1,7 @@
 
 #include "Canvas.h"
+#include "Animation.h"
+#include "PaintBrushTool.h"
 
 void Canvas::draw()
 {
@@ -24,13 +26,27 @@ bool Canvas::load_media()
 	return true;
 }
 
+void Canvas::get_notification(std::string event, int id)
+{
+	for (int i = 0; i < controls.size(); i++)
+	{
+		if (controls[i]->has_focus())
+			controls[i]->set_focus(false);
+	}
+
+	controls[id]->set_focus(true);
+}
+
+void Canvas::set_cursor(std::string c)
+{
+	cursor = c; 
+}
+
 void Canvas::init_controls()
 {
-	Button *b = new Button(renderer, 29, 26, 0, 0, "", 
-		        "images/icons.png", 996, 692, 29, 26);
-	// TextBox *t = new TextBox(renderer, font, 200, h - 20, 10, 10,
-	// 	                                         true, false, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 
-	// 	                                         0xBB, 0xBB, 0xBB);
-	//controls.push_back(t);
+	Button *b = new Button(0, this, renderer, 30, 30, 0, 0, "", 
+		        "images/icons.png", 0, 0, 30, 30);
+	PaintBrushTool p(this, "circle");
+
 	controls.push_back(b);
 }

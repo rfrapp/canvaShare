@@ -10,13 +10,15 @@
 #include "Control.h"
 #include "Button.h"
 #include "TextBox.h"
+#include "Tool.h"
+#include "Menu.h"
+#include "PaintBrushTool.h"
 
-class Canvas
+class Canvas : public Menu 
 {
 private:
 	// The width and height of the canvas
 	int w, h;
-
 	SDL_Renderer *renderer;
 	std::vector< Control* > controls;
 
@@ -29,10 +31,16 @@ private:
 
 	Font *font;
 
+	std::string cursor;
+
+	int current_tool_index;
+	std::vector< Tool * > tools;
+
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
 	      : w(width), h(height), renderer(r),
-	        foreground(0x00000000), background(0xFFFFFFFF)
+	        foreground(0x00000000), background(0xFFFFFFFF),
+	        cursor(""), current_tool_index(0)
 	{
 	}
 
@@ -55,6 +63,9 @@ public:
 	// screen
 	void draw();
 	void handle_input(SDL_Event *e);
+
+	void get_notification(std::string event, int id);
+	void set_cursor(std::string c);
 
 	// Loads fonts, images, etc.
 	bool load_media();
