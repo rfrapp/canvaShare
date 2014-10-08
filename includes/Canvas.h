@@ -11,9 +11,10 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "Menu.h"
-#include "Tool.h"
 #include "PaintBrushTool.h"
 #include "CanvasItem.h"
+
+class Tool;
 
 class Canvas : public Menu 
 {

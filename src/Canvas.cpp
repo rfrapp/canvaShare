@@ -2,6 +2,7 @@
 #include "Canvas.h"
 #include "Animation.h"
 #include "PaintBrushTool.h"
+#include "Tool.h"
 
 void Canvas::draw()
 {

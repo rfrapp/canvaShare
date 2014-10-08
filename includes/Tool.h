@@ -3,17 +3,17 @@
 #define TOOL_H 
 
 #include "Rect.h"
-#include "Menu.h"
+class Canvas;
 
 class Tool
 {
 protected:
-	Menu * parent; 
+	Canvas * parent; 
 	bool active;
 	Rect draw_bounds;
 
 public:
-	Tool(Menu * p, Rect r) : parent(p), active(false),
+	Tool(Canvas * p, Rect r) : parent(p), active(false),
 	                         draw_bounds(r)
 	{
 	}
