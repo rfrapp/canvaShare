@@ -20,7 +20,7 @@ private:
 	Rect    img_clip;
 
 public:
-	Button( int _id, Menu * parent, SDL_Renderer * r, int w, int h, int x = 0, int y = 0, 
+	Button( int _id, Menu * p, SDL_Renderer * r, int w, int h, int x = 0, int y = 0, 
 		    const char * l = "", const char * img_path = "", 
 		    int clip_x = 0, int clip_y = 0, int clip_w = 0, int clip_h = 0,
 		    Uint8 b_r = 255, Uint8 b_g = 255, Uint8 b_b = 255,
@@ -29,7 +29,7 @@ public:
 			: Control(r, w, h, x, y, b_r, b_g, b_b, f_r, f_g, f_b),
 			  label(l), bg_img(Texture()), 
 			  img_clip(Rect(clip_x, clip_y, clip_w, clip_h)),
-			  id(_id)
+			  id(_id), parent(p)
 	{
 		bg_img.load_from_file(renderer, img_path, 255, 255, 255);
 	}

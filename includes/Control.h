@@ -67,6 +67,7 @@ public:
 	// Getters 
 	// ========================================================================
 	bool         has_focus()     const { return focus;         }
+	bool         toggle_focus()  const { (focus) ? false : true; }
 	Rect         rect()          const { return bounding_rect; }
 	// ========================================================================
 

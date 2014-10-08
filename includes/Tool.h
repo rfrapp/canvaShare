@@ -2,23 +2,26 @@
 #ifndef TOOL_H
 #define TOOL_H 
 
+#include "Rect.h"
 #include "Menu.h"
 
 class Tool
 {
 protected:
-	std::string cursor;
 	Menu * parent; 
+	bool active;
+	Rect draw_bounds;
 
 public:
-	Tool(Menu * p, std::string c) : parent(p), cursor(c)
+	Tool(Menu * p, Rect r) : parent(p), active(false),
+	                         draw_bounds(r)
 	{
 	}
-
+	
 	~Tool() {  }
 
-	virtual void draw() = 0;
-	virtual void on_activate() = 0;
+	virtual void draw(SDL_Renderer *r) = 0;
+	virtual void toggle_activate() = 0;
 	virtual void handle_input(SDL_Event *e) = 0;
 };
 

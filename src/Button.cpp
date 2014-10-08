@@ -49,8 +49,10 @@ void Button::handle_input(SDL_Event *e)
 		if (bounding_rect.collide_point(x, y))
 		{
 			// TODO: call callback click function
-
 			focus = (focus ? false : true);
+			
+			if (parent != NULL)
+				parent->get_notification("click", id);
 		} 
 	}
 }
