@@ -17,7 +17,7 @@ void TriangleTool::handle_input(SDL_Event *e)
     	if (e->type == SDL_MOUSEBUTTONDOWN && draw_bounds.collide_point(x, y))
     	{
     		if (item != NULL) delete item; 
-    		item = new CanvasItem("rect", 
+    		item = new CanvasItem("triangle", 
 							  parent->get_foreground_r(), parent->get_foreground_g(),
 							  parent->get_foreground_b(), parent->get_foreground_a(),
 			                  parent->get_background_r(), parent->get_background_g(),

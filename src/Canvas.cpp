@@ -41,7 +41,7 @@ void Canvas::draw()
 					       canvas_items[i].get_foreground_a());
 			}
 		}
-		if (canvas_items[i].get_type() == "rect" && canvas_items[i].points.size() > 1)
+		else if (canvas_items[i].get_type() == "rect" && canvas_items[i].points.size() > 1)
 		{
 			SDL_Rect r = {canvas_items[i].points[0].x, 
 			              canvas_items[i].points[0].y,
@@ -53,6 +53,17 @@ void Canvas::draw()
 				                   canvas_items[i].get_background_b(),
 				                   canvas_items[i].get_background_a());
 			SDL_RenderFillRect(renderer, &r);
+		}
+		else if (canvas_items[i].get_type() == "triangle")
+		{
+			filledTrigonRGBA(renderer, (canvas_items[i].points[1].x + canvas_items[i].points[0].x) / 2, 
+				      (canvas_items[i].points[1].y + canvas_items[i].points[0].y) / 2, 
+				      canvas_items[i].points[1].x, canvas_items[i].points[1].y, 
+                      canvas_items[i].points[0].x, canvas_items[i].points[1].y, 
+                      canvas_items[i].get_background_r(), 
+                      canvas_items[i].get_background_g(), 
+                      canvas_items[i].get_background_a(), 
+                      canvas_items[i].get_background_a());
 		}
 	}
 }
