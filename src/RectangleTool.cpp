@@ -1,36 +1,23 @@
 
+#include "RectangleTool.h"
 #include "Canvas.h"
-#include "PaintBrushTool.h"
 
-PaintBrushTool::PaintBrushTool(Canvas * p, Rect r)
-			   : Tool(p, r), item(NULL), clicked(false)
+RectangleTool::RectangleTool(Canvas *c, Rect r)
+              : Tool(c, r), clicked(false),
+                pointer_width(5), item(NULL)
 {
 }
 
-void PaintBrushTool::handle_input(SDL_Event *e) 
-{ 
+void RectangleTool::handle_input(SDL_Event *e)
+{
 	if (active)
 	{
 		int x, y;
    		SDL_GetMouseState(&x, &y);
-	
-		if (e->type == SDL_KEYUP)
-		{
-			if(e->key.keysym.sym == SDLK_EQUALS && parent->get_brush_radius() < 15)
-	        {
-	        	parent->increment_brush_radius();
-	        }
-	        else if(e->key.keysym.sym == SDLK_MINUS && parent->get_brush_radius() > 0)
-	        {
-	        	parent->decrement_brush_radius();
-	        }
-    	}
-    	else if (e->type == SDL_MOUSEBUTTONDOWN && draw_bounds.collide_point(x, y))
+    	if (e->type == SDL_MOUSEBUTTONDOWN && draw_bounds.collide_point(x, y))
     	{
     		if (item != NULL) delete item; 
-
-    		std::cout << "br: " << parent->get_brush_radius() << std::endl;
-    		item = new CanvasItem("paint", 
+    		item = new CanvasItem("rect", 
 							  parent->get_foreground_r(), parent->get_foreground_g(),
 							  parent->get_foreground_b(), parent->get_foreground_a(),
 			                  parent->get_background_r(), parent->get_background_g(),
@@ -41,15 +28,16 @@ void PaintBrushTool::handle_input(SDL_Event *e)
     		clicked = true;
 
     		item->points.push_back(p);
-    		item->set_brush_radius(parent->get_brush_radius());
     		parent->add_canvas_item(*item);
     	}
     	else if (e->type == SDL_MOUSEMOTION && draw_bounds.collide_point(x, y))
     	{
     		if (clicked)
-    		{	
-	    		Point p = {x, y};
-    			parent->get_items()[parent->get_items().size() - 1].set_brush_radius(parent->get_brush_radius());
+    		{
+    			if (parent->get_items()[parent->get_items().size() - 1].points.size() == 2)
+    				parent->get_items()[parent->get_items().size() - 1].points.pop_back();
+
+    			Point p = {x, y};
     			parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
@@ -57,17 +45,19 @@ void PaintBrushTool::handle_input(SDL_Event *e)
     	{
     		if (clicked)
     		{
+    			if (parent->get_items()[parent->get_items().size() - 1].points.size() == 2)
+    				parent->get_items()[parent->get_items().size() - 1].points.pop_back();
+
 	    		Point p = {x, y};
 
 	    		clicked = false;
-	    		parent->get_items()[parent->get_items().size() - 1].set_brush_radius(parent->get_brush_radius());
 	    		parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
 	}
 }
 
-void PaintBrushTool::draw(SDL_Renderer *r)
+void RectangleTool::draw(SDL_Renderer *r)
 {
 	int x, y;
 	SDL_GetMouseState(&x, &y);
@@ -75,9 +65,14 @@ void PaintBrushTool::draw(SDL_Renderer *r)
 	if (active && draw_bounds.collide_point(x, y))
 	{
 		SDL_ShowCursor(SDL_DISABLE);
-		circleRGBA(r, x, y, parent->get_brush_radius(), 
-			       0, 0, 0, 255);
+		hlineRGBA(r, x - pointer_width, x + pointer_width, y, 0, 0, 0, 255);
+		vlineRGBA(r, x, y - pointer_width, y + pointer_width, 0, 0, 0, 255);
 	}
 	else 
 		SDL_ShowCursor(SDL_ENABLE);
+}
+
+void RectangleTool::toggle_activate()
+{
+	Tool::toggle_activate();
 }

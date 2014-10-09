@@ -25,7 +25,7 @@ public:
 
 	void toggle_activate() 
 	{
-		active = (active ? false : true);
+		Tool::toggle_activate();
 	}
 
 };

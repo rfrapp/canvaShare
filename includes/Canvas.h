@@ -12,6 +12,8 @@
 #include "TextBox.h"
 #include "Menu.h"
 #include "PaintBrushTool.h"
+#include "RectangleTool.h"
+#include "TriangleTool.h"
 #include "CanvasItem.h"
 
 class Tool;
@@ -21,7 +23,9 @@ class Canvas : public Menu
 private:
 	enum Tool_IDs
 	{
-		PAINT_BRUSH_ID = 0
+		PAINT_BRUSH_ID = 0,
+		RECTANGLE_ID,
+		TRIANGLE_ID
 	};
 
 	// The width and height of the canvas
@@ -54,7 +58,7 @@ public:
 	Canvas(SDL_Renderer *r, int width, int height) 
 	      : w(width), h(height), renderer(r),
 	        foreground(0x000000), background(0xFFFFFFFF),
-	        cursor(""), current_tool_index(0),
+	        cursor(""), current_tool_index(-1),
 	        draw_bounds(10, 40, width - 20, height - 50),
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
 	        bg_r(0), bg_g(0), bg_b(0), bg_a(255)

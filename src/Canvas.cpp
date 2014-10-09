@@ -16,8 +16,8 @@ void Canvas::draw()
 	for (int i = 0; i < controls.size(); i++)
 		controls[i]->draw();
 
-	for (int i = 0; i < tools.size(); i++)
-		tools[i]->draw(renderer);
+	if (current_tool_index != -1)
+		tools[current_tool_index]->draw(renderer);
 
 	for (int i = 0; i < canvas_items.size(); i++)
 	{
@@ -41,6 +41,19 @@ void Canvas::draw()
 					       canvas_items[i].get_foreground_a());
 			}
 		}
+		if (canvas_items[i].get_type() == "rect" && canvas_items[i].points.size() > 1)
+		{
+			SDL_Rect r = {canvas_items[i].points[0].x, 
+			              canvas_items[i].points[0].y,
+			              canvas_items[i].points[1].x - canvas_items[i].points[0].x,
+			              canvas_items[i].points[1].y - canvas_items[i].points[0].y};
+
+			SDL_SetRenderDrawColor(renderer, canvas_items[i].get_background_r(),
+				                   canvas_items[i].get_background_g(),
+				                   canvas_items[i].get_background_b(),
+				                   canvas_items[i].get_background_a());
+			SDL_RenderFillRect(renderer, &r);
+		}
 	}
 }
 
@@ -50,7 +63,8 @@ void Canvas::handle_input(SDL_Event *e)
 	for (int i = 0; i < controls.size(); i++)
 		controls[i]->handle_input(e);
 
-	tools[current_tool_index]->handle_input(e);
+	if (current_tool_index != -1)
+		tools[current_tool_index]->handle_input(e);
 }
 
 bool Canvas::load_media()
@@ -85,8 +99,21 @@ void Canvas::init_controls()
 {
 	Button *b = new Button(PAINT_BRUSH_ID, this, renderer, 30, 30, 10, 5, "", 
 		        "images/icons.png", 0, 0, 30, 30);
+	Button *b2 = new Button(RECTANGLE_ID, this, renderer, 30, 30, 45, 5, "", 
+		        "images/icons.png", 154, 0, 30, 30);
+	Button *b3 = new Button(TRIANGLE_ID, this, renderer, 30, 30, 80, 5, "", 
+		        "images/icons.png", 185, 0, 30, 30);
+
 	PaintBrushTool *p = new PaintBrushTool(this, draw_bounds);
+	RectangleTool *r = new RectangleTool(this, draw_bounds);
+	TriangleTool *t = new TriangleTool(this, draw_bounds);
 
 	tools.push_back(p);
 	controls.push_back(b);
+
+	tools.push_back(r);
+	controls.push_back(b2);
+
+	tools.push_back(t);
+	controls.push_back(b3);
 }

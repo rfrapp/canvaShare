@@ -21,8 +21,11 @@ public:
 	~Tool() {  }
 
 	virtual void draw(SDL_Renderer *r) = 0;
-	virtual void toggle_activate() = 0;
 	virtual void handle_input(SDL_Event *e) = 0;
+	virtual void toggle_activate() 
+	{
+		active = (active ? false : true);
+	}
 };
 
 #endif 
