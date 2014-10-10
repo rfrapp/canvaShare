@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 
 struct Point 
 {
@@ -49,6 +50,32 @@ public:
 	int get_brush_radius() const { return brush_radius; }
 
 	void set_brush_radius(int r) { brush_radius = r; }
+	
+	std::string to_string() const 
+	{
+		std::string str;
+		std::stringstream stream;
+		stream << brush_radius << '\n'
+		       << type << '\n'
+		       << foreground_r << '\n'
+		       << foreground_g << '\n'
+		       << foreground_b << '\n'
+		       << foreground_a << '\n'
+		       << background_r << '\n'
+		       << background_g << '\n'
+		       << background_b << '\n'
+		       << background_a << '\n';
+
+		for (int i = 0; i < points.size(); i++)
+		{
+			stream << '(' << points[i].x << ", " 
+				   << points[i].y << ") ";
+		}
+
+		str = stream.str();
+
+		return str;
+	}
 };
 
 #endif 
