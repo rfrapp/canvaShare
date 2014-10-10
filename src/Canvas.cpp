@@ -54,7 +54,7 @@ void Canvas::draw()
 				                   canvas_items[i].get_background_a());
 			SDL_RenderFillRect(renderer, &r);
 		}
-		else if (canvas_items[i].get_type() == "triangle")
+		else if (canvas_items[i].get_type() == "triangle" && canvas_items[i].points.size() > 1)
 		{
 
 			filledTrigonRGBA(renderer, (canvas_items[i].points[1].x + canvas_items[i].points[0].x) / 2, 
@@ -65,6 +65,18 @@ void Canvas::draw()
                       canvas_items[i].get_background_g(), 
                       canvas_items[i].get_background_b(), 
                       canvas_items[i].get_background_a());
+		}
+		else if (canvas_items[i].get_type() == "circle" && canvas_items[i].points.size() > 1)
+		{
+			filledCircleRGBA(renderer, 
+                   canvas_items[i].points[0].x + (canvas_items[i].points[1].x - 
+                   	                              canvas_items[i].points[0].x) / 2,
+                   canvas_items[i].points[0].y + (canvas_items[i].points[1].y - canvas_items[i].points[0].y) / 2, 
+                   (canvas_items[i].points[1].x - canvas_items[i].points[0].x) / 2,
+                   canvas_items[i].get_background_r(), 
+                   canvas_items[i].get_background_g(), 
+                   canvas_items[i].get_background_b(),
+                   canvas_items[i].get_background_a());
 		}
 	}
 }
@@ -99,7 +111,11 @@ void Canvas::get_notification(std::string event, int id)
 	}
 
 	current_tool_index = id;
+
 	tools[id]->toggle_activate();
+
+	if (controls[id]->has_focus() && !tools[id]->is_active())
+		controls[id]->set_focus(false);
 }
 
 void Canvas::set_cursor(std::string c)
@@ -109,23 +125,58 @@ void Canvas::set_cursor(std::string c)
 
 void Canvas::init_controls()
 {
-	Button *b = new Button(PAINT_BRUSH_ID, this, renderer, 30, 30, 10, 5, "", 
+	int start_x = 10;
+	Button *paintbutton = new Button(PAINT_BRUSH_ID, this, renderer, 30, 30, start_x, 5, "", 
 		        "images/icons.png", 0, 0, 30, 30);
-	Button *b2 = new Button(RECTANGLE_ID, this, renderer, 30, 30, 45, 5, "", 
+	start_x += 35;
+
+	Button *rectbutton = new Button(RECTANGLE_ID, this, renderer, 30, 30, start_x, 5, "", 
 		        "images/icons.png", 154, 0, 30, 30);
-	Button *b3 = new Button(TRIANGLE_ID, this, renderer, 30, 30, 80, 5, "", 
+	start_x += 35;
+
+	Button *trianglebutton = new Button(TRIANGLE_ID, this, renderer, 30, 30, start_x, 5, "", 
 		        "images/icons.png", 185, 0, 30, 30);
+	start_x += 35;
 
-	PaintBrushTool *p = new PaintBrushTool(this, draw_bounds);
-	RectangleTool *r = new RectangleTool(this, draw_bounds);
-	TriangleTool *t = new TriangleTool(this, draw_bounds);
+	Button *circlebutton = new Button(CIRCLE_ID, this, renderer, 30, 30, start_x, 5, "",
+		        "images/icons.png", 213, 0, 30, 30);
+	start_x += 35;
 
-	tools.push_back(p);
-	controls.push_back(b);
+	Button *undobutton = new Button(UNDO_ID, this, renderer, 30, 28, start_x, 5, "",
+		        "images/icons.png", 60, 0, 28, 30);
+	start_x += 35;
 
-	tools.push_back(r);
-	controls.push_back(b2);
+	Button *redobutton = new Button(REDO_ID, this, renderer, 30, 25, start_x, 5, "",
+		        "images/icons.png", 88, 0, 25, 30);
+	start_x += 35;
 
-	tools.push_back(t);
-	controls.push_back(b3);
+	PaintBrushTool *ptool = new PaintBrushTool(this, draw_bounds);
+	RectangleTool *recttool = new RectangleTool(this, draw_bounds);
+	TriangleTool *tritool = new TriangleTool(this, draw_bounds);
+	CircleTool *circletool = new CircleTool(this, draw_bounds);
+	UndoTool *undotool = new UndoTool(this, draw_bounds);
+	RedoTool *redotool = new RedoTool(this, draw_bounds);
+
+	// add paint brush tool
+	tools.push_back(ptool);
+	controls.push_back(paintbutton);
+
+	// add rectangle
+	tools.push_back(recttool);
+	controls.push_back(rectbutton);
+
+	// add triangle tool 
+	tools.push_back(tritool);
+	controls.push_back(trianglebutton);
+
+	// add circle tool
+	tools.push_back(circletool);
+	controls.push_back(circlebutton);
+
+	// add undo tool
+	tools.push_back(undotool);
+	controls.push_back(undobutton);
+
+	tools.push_back(redotool);
+	controls.push_back(redobutton);
 }

@@ -14,6 +14,9 @@
 #include "PaintBrushTool.h"
 #include "RectangleTool.h"
 #include "TriangleTool.h"
+#include "CircleTool.h"
+#include "UndoTool.h"
+#include "RedoTool.h"
 #include "CanvasItem.h"
 
 class Tool;
@@ -25,7 +28,10 @@ private:
 	{
 		PAINT_BRUSH_ID = 0,
 		RECTANGLE_ID,
-		TRIANGLE_ID
+		TRIANGLE_ID,
+		CIRCLE_ID,
+		UNDO_ID,
+		REDO_ID
 	};
 
 	// The width and height of the canvas
@@ -53,6 +59,7 @@ private:
 	Rect draw_bounds; 
 
 	std::vector< CanvasItem > canvas_items;
+	std::vector< CanvasItem > undone_itmes; 
 
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
@@ -108,6 +115,32 @@ public:
 	void set_cursor(std::string c);
 
 	void add_canvas_item(const CanvasItem & i) { canvas_items.push_back(i); }
+	void undo_canvas_item() 
+	{ 
+		// TODO: Send message to network
+		// Somethong like "undo" to to let
+		// the other client know what happened 
+
+		if (canvas_items.size() > 0)
+		{
+			CanvasItem item = canvas_items[canvas_items.size() - 1];
+			canvas_items.pop_back();
+			undone_itmes.push_back(item);
+		}
+	}
+	void redo_canvas_item()
+	{
+		// TODO: Send message to network
+		// Somethong like "redo" to to let
+		// the other client know what happened
+
+		if (undone_itmes.size() > 0)
+		{
+			CanvasItem item = undone_itmes[undone_itmes.size() - 1];
+			undone_itmes.pop_back();
+			canvas_items.push_back(item);
+		}
+	}
 
 	// Loads fonts, images, etc.
 	bool load_media();
