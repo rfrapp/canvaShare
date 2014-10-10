@@ -27,26 +27,34 @@ void PaintBrushTool::handle_input(SDL_Event *e)
     	}
     	else if (e->type == SDL_MOUSEBUTTONDOWN && draw_bounds.collide_point(x, y))
     	{
-    		if (item != NULL) delete item; 
+    		if (x - parent->get_brush_radius() >= draw_bounds.x && 
+    			x + parent->get_brush_radius() <= draw_bounds.x + draw_bounds.w &&
+    			y - parent->get_brush_radius() >= draw_bounds.y && 
+    			y + parent->get_brush_radius() <= draw_bounds.y + draw_bounds.h)
+    		{
+    			if (item != NULL) delete item; 
 
-    		std::cout << "br: " << parent->get_brush_radius() << std::endl;
-    		item = new CanvasItem("paint", 
-							  parent->get_foreground_r(), parent->get_foreground_g(),
-							  parent->get_foreground_b(), parent->get_foreground_a(),
-			                  parent->get_background_r(), parent->get_background_g(),
-			                  parent->get_background_b(), parent->get_background_a(), 
-			                  parent->get_brush_radius());
+	    		item = new CanvasItem("paint", 
+								  parent->get_foreground_r(), parent->get_foreground_g(),
+								  parent->get_foreground_b(), parent->get_foreground_a(),
+				                  parent->get_background_r(), parent->get_background_g(),
+				                  parent->get_background_b(), parent->get_background_a(), 
+				                  parent->get_brush_radius());
 
-    		Point p = {x, y};
-    		clicked = true;
+	    		Point p = {x, y};
+	    		clicked = true;
 
-    		item->points.push_back(p);
-    		item->set_brush_radius(parent->get_brush_radius());
-    		parent->add_canvas_item(*item);
+	    		item->points.push_back(p);
+	    		item->set_brush_radius(parent->get_brush_radius());
+	    		parent->add_canvas_item(*item);
+    		}
     	}
     	else if (e->type == SDL_MOUSEMOTION && draw_bounds.collide_point(x, y))
     	{
-    		if (clicked)
+    		if (clicked && x - parent->get_brush_radius() >= draw_bounds.x && 
+    			x + parent->get_brush_radius() <= draw_bounds.x + draw_bounds.w && 
+    			y - parent->get_brush_radius() >= draw_bounds.y && 
+    			y + parent->get_brush_radius() <= draw_bounds.y + draw_bounds.h)
     		{	
 	    		Point p = {x, y};
     			parent->get_items()[parent->get_items().size() - 1].set_brush_radius(parent->get_brush_radius());

@@ -17,6 +17,7 @@
 #include "CircleTool.h"
 #include "UndoTool.h"
 #include "RedoTool.h"
+#include "ScreenshotTool.h"
 #include "CanvasItem.h"
 
 class Tool;
@@ -31,7 +32,8 @@ private:
 		TRIANGLE_ID,
 		CIRCLE_ID,
 		UNDO_ID,
-		REDO_ID
+		REDO_ID,
+		SCREENSHOT_ID
 	};
 
 	// The width and height of the canvas
@@ -147,6 +149,10 @@ public:
 
 	// Setter for the renderer property 
 	void set_renderer(SDL_Renderer *r) { renderer = r; }
+	SDL_Renderer * get_renderer() const { return renderer; }
+
+	int get_width() const { return w; }
+	int get_height() const { return h; }
 };
 
 #endif

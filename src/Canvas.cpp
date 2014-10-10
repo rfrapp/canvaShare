@@ -150,12 +150,17 @@ void Canvas::init_controls()
 		        "images/icons.png", 88, 0, 25, 30);
 	start_x += 35;
 
-	PaintBrushTool *ptool = new PaintBrushTool(this, draw_bounds);
-	RectangleTool *recttool = new RectangleTool(this, draw_bounds);
-	TriangleTool *tritool = new TriangleTool(this, draw_bounds);
-	CircleTool *circletool = new CircleTool(this, draw_bounds);
-	UndoTool *undotool = new UndoTool(this, draw_bounds);
-	RedoTool *redotool = new RedoTool(this, draw_bounds);
+	Button *screenshotbutton = new Button(SCREENSHOT_ID, this, renderer, 30, 26, start_x, 5, "",
+		        "images/icons.png", 308, 0, 26, 30);
+	start_x += 35;
+
+	PaintBrushTool *ptool      = new PaintBrushTool(this, draw_bounds);
+	RectangleTool *recttool    = new RectangleTool(this, draw_bounds);
+	TriangleTool *tritool      = new TriangleTool(this, draw_bounds);
+	CircleTool *circletool     = new CircleTool(this, draw_bounds);
+	UndoTool *undotool         = new UndoTool(this, draw_bounds);
+	RedoTool *redotool         = new RedoTool(this, draw_bounds);
+	ScreenshotTool *screentool = new ScreenshotTool(this, draw_bounds);
 
 	// add paint brush tool
 	tools.push_back(ptool);
@@ -177,6 +182,11 @@ void Canvas::init_controls()
 	tools.push_back(undotool);
 	controls.push_back(undobutton);
 
+	// add redo tool
 	tools.push_back(redotool);
 	controls.push_back(redobutton);
+
+	// add screenshot tool
+	tools.push_back(screentool);
+	controls.push_back(screenshotbutton);
 }
