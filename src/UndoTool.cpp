@@ -1,5 +1,5 @@
 
-#include "RectangleTool.h"
+#include "UndoTool.h"
 #include "Canvas.h"
 
 UndoTool::UndoTool(Canvas *c, Rect r)

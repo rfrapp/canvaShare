@@ -11,6 +11,7 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "Menu.h"
+#include "Texture.h"
 #include "PaintBrushTool.h"
 #include "RectangleTool.h"
 #include "TriangleTool.h"
@@ -18,6 +19,8 @@
 #include "UndoTool.h"
 #include "RedoTool.h"
 #include "ScreenshotTool.h"
+#include "PreviousPageTool.h"
+#include "NextPageTool.h"
 #include "CanvasItem.h"
 
 class Tool;
@@ -33,7 +36,9 @@ private:
 		CIRCLE_ID,
 		UNDO_ID,
 		REDO_ID,
-		SCREENSHOT_ID
+		SCREENSHOT_ID,
+		PREVPAGE_ID,
+		NEXTPAGE_ID
 	};
 
 	// The width and height of the canvas
@@ -61,16 +66,21 @@ private:
 	Rect draw_bounds; 
 
 	std::vector< CanvasItem > canvas_items;
-	std::vector< CanvasItem > undone_itmes; 
+	std::vector< CanvasItem > undone_items; 
+	CanvasItem * copied_item;
+
+	int current_page;
+	std::vector< Texture > pages;
 
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
 	      : w(width), h(height), renderer(r),
 	        foreground(0x000000), background(0xFFFFFFFF),
 	        cursor(""), current_tool_index(-1),
-	        draw_bounds(10, 40, width - 20, height - 50),
+	        draw_bounds(10, 40, width - 20, height - 80),
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
-	        bg_r(0), bg_g(0), bg_b(0), bg_a(255)
+	        bg_r(0), bg_g(0), bg_b(0), bg_a(255),
+	        current_page(0)
 	{
 	}
 
@@ -116,33 +126,15 @@ public:
 	void decrement_brush_radius() { brush_radius--;   }
 	void set_cursor(std::string c);
 
-	void add_canvas_item(const CanvasItem & i) { canvas_items.push_back(i); }
-	void undo_canvas_item() 
-	{ 
-		// TODO: Send message to network
-		// Somethong like "undo" to to let
-		// the other client know what happened 
+	void add_page();
 
-		if (canvas_items.size() > 0)
-		{
-			CanvasItem item = canvas_items[canvas_items.size() - 1];
-			canvas_items.pop_back();
-			undone_itmes.push_back(item);
-		}
-	}
-	void redo_canvas_item()
-	{
-		// TODO: Send message to network
-		// Somethong like "redo" to to let
-		// the other client know what happened
+	void add_canvas_item(const CanvasItem & i);
 
-		if (undone_itmes.size() > 0)
-		{
-			CanvasItem item = undone_itmes[undone_itmes.size() - 1];
-			undone_itmes.pop_back();
-			canvas_items.push_back(item);
-		}
-	}
+	void undo_canvas_item();
+	void redo_canvas_item();
+	void page_left();
+	void page_right();
+	int get_page() const { return current_page; }
 
 	// Loads fonts, images, etc.
 	bool load_media();

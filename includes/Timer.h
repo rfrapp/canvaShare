@@ -16,6 +16,10 @@ private:
 	bool started;
 
 public:
+	Timer() : seconds(0), countdown_from(0)
+	{
+	}
+	
 	Timer(int s) : countdown_from(s), seconds(0)
 	{
 		startTicks = 0;

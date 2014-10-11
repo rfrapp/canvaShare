@@ -15,6 +15,7 @@ class CanvasItem
 {
 private:
 	int brush_radius;
+	int page;
 	std::string type;
 	Uint8 foreground_r;
 	Uint8 foreground_g;
@@ -48,7 +49,9 @@ public:
 
 	std::string get_type() const { return type; }
 	int get_brush_radius() const { return brush_radius; }
+	int get_page() const { return page; }
 
+	void set_page(int p) { page = p; }
 	void set_brush_radius(int r) { brush_radius = r; }
 	
 	std::string to_string() const 
@@ -57,6 +60,7 @@ public:
 		std::stringstream stream;
 		stream << brush_radius << '\n'
 		       << type << '\n'
+		       << page << '\n'
 		       << foreground_r << '\n'
 		       << foreground_g << '\n'
 		       << foreground_b << '\n'
@@ -68,8 +72,8 @@ public:
 
 		for (int i = 0; i < points.size(); i++)
 		{
-			stream << '(' << points[i].x << ", " 
-				   << points[i].y << ") ";
+			stream << points[i].x 
+				   << points[i].y;
 		}
 
 		str = stream.str();

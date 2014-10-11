@@ -41,6 +41,26 @@ bool Texture::load_from_file(SDL_Renderer *renderer, std::string path, int c_r, 
     return texture != NULL;
 }
 
+bool Texture::load_blank(SDL_Renderer *r, int w, int h)
+{
+    destroy();
+
+    texture = SDL_CreateTexture(r, SDL_PIXELFORMAT_RGBA8888, 
+                                SDL_TEXTUREACCESS_TARGET, 
+                                w, h);
+
+    if (texture == NULL)
+        std::cout << "Error creating blank texture" << std::endl;
+    else
+    {
+        std::cout << "Created texture" << std::endl;
+        width = w;
+        height = h;
+    }
+
+    return texture != NULL;
+}
+
 bool Texture::load_from_file_streaming(SDL_Renderer *renderer, 
                                   std::string path, int c_r, int c_g, int c_b)
 {

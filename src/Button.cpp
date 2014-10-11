@@ -34,6 +34,23 @@ void Button::draw()
 		SDL_RenderFillRect(renderer, &o_rect);
 	}
 
+	if (show_tooltip)
+	{
+		SDL_Rect t_rect = {bounding_rect.x - 5, bounding_rect.y + bounding_rect.h + 5, 
+		                   tooltip_font->get_width(tooltip.c_str()) + 5, tooltip_font->get_line_height()};
+		SDL_Rect t_o_rect = {t_rect.x - 1, t_rect.y - 1, t_rect.w + 2, t_rect.h + 2};
+
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+		SDL_RenderFillRect(renderer, &t_o_rect);
+
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+		SDL_RenderFillRect(renderer, &t_rect);
+
+		tooltip_texture.render(renderer, bounding_rect.x - 3, bounding_rect.y + bounding_rect.h + 10);
+	}
+
 	// draw the image on the screen
 	bg_img.render(renderer, bounding_rect.x, bounding_rect.y, &clip);
 
@@ -41,11 +58,28 @@ void Button::draw()
 
 void Button::handle_input(SDL_Event *e)
 {
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+
+	if (bounding_rect.collide_point(x, y))
+	{
+		if (!tooltip_timer.isStarted())
+			tooltip_timer.start();
+	}
+	else
+	{
+		tooltip_timer.stop();
+		tooltip_timer.reset();
+		show_tooltip = false;
+	}
+
+	if (tooltip_timer.getTicks() >= 2000)
+	{
+		show_tooltip = true;
+	}
+
 	if (e->type == SDL_MOUSEBUTTONUP)
 	{
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-
 		if (bounding_rect.collide_point(x, y))
 		{
 			// TODO: call callback click function

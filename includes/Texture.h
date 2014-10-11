@@ -29,7 +29,7 @@ public:
     { 
     }
 
-    ~Texture() { destroy(); }
+    //~Texture() { destroy(); }
 
     void destroy() 
     {
@@ -40,8 +40,9 @@ public:
             width = 0; 
             height = 0; 
         }
-    }   
+    }  
 
+    bool load_blank(SDL_Renderer *r, int w, int h); 
     bool load_from_file(SDL_Renderer *renderer, std::string path, int c_r = -1, int c_g = -1, int c_b = -1);
     bool load_from_file_streaming(SDL_Renderer *renderer, 
                                   std::string path, int c_r = -1, int c_g = -1, int c_b = -1);
@@ -65,7 +66,12 @@ public:
 
     void set_as_target(SDL_Renderer *r)
     {
-        SDL_SetRenderTarget(r, texture);
+        int v = SDL_SetRenderTarget(r, texture);
+
+        if (v != 0)
+        {
+            std::cout << SDL_GetError() << std::endl;
+        }
     }
 
     int get_width()             const   { return width;     }

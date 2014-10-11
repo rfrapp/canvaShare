@@ -18,6 +18,7 @@ private:
 	int visible_line_start, visible_line_end;
 	int visible_char_start, visible_char_end;
 	bool font_created;
+	bool infinite;
 	bool multiline;
 	Font *font;
 	std::vector< std::string > lines;
@@ -45,11 +46,11 @@ public:
 		max_lines = (max_h / _h) - 1;
 	}
 
-	TextSurface(Font *f, int maxw, int maxh, int _x=0, int _y=0, bool multi_line=true, int r=0, int g=0, int b=0) 
+	TextSurface(Font *f, int maxw, int maxh, int _x=0, int _y=0, bool multi_line=true, bool infinite_width=false, int r=0, int g=0, int b=0) 
 	           : font(f), x(_x), y(_y), max_w(maxw), max_h(maxh),
 	             max_chars_per_line(0), font_created(false), visible_line_start(0), visible_line_end(0),
 				 multiline(multi_line),
-	   			 visible_char_start(0), visible_char_end(0)
+	   			 visible_char_start(0), visible_char_end(0), infinite(infinite_width)
 	{
 		text_color.r = r;
 		text_color.g = g;
@@ -72,8 +73,29 @@ public:
 			Texture::render(renderer, x, y);
 	}
 
+	void render(SDL_Renderer *renderer, int _x, int _y)
+	{
+		if (lines.size() > 0)
+		{
+			Texture::render(renderer, _x, _y, NULL);
+		}
+	}
+
 	void set_text(SDL_Renderer * r, std::string str)
 	{
+		if (!multiline)
+		{
+			if (lines.size() == 0)
+				lines.push_back(str);
+			else
+				lines[0] = str;
+
+			visible_char_start = 0;
+			visible_char_end = str.length();
+		}
+
+		std::cout << "line: " << lines[0] << std::endl;
+
 		load_from_rendered_text(r);
 	}
 

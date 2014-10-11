@@ -34,7 +34,8 @@ bool Program::init()
         	// Create the renderer. This is what's used
         	// to draw things in SDL2.
 
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+                                                      | SDL_RENDERER_TARGETTEXTURE);
 
             // Exit if there was an error creating the
             // renderer
@@ -69,6 +70,7 @@ bool Program::init()
                 // Set the canvas' renderer to the newly created
                 // one 
                 canvas.set_renderer(renderer);
+                canvas.add_page();
 
                 if (!load_media())
                     return false;
