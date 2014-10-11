@@ -38,6 +38,15 @@ void Button::draw()
 	{
 		SDL_Rect t_rect = {bounding_rect.x - 5, bounding_rect.y + bounding_rect.h + 5, 
 		                   tooltip_font->get_width(tooltip.c_str()) + 5, tooltip_font->get_line_height()};
+		
+		if (t_rect.x < 0)
+			t_rect.x += -t_rect.x * 2;
+		if (t_rect.x + t_rect.w > parent->get_width())
+			t_rect.x -= parent->get_width() - (t_rect.x + t_rect.w) - 5;
+
+		if (t_rect.y + t_rect.h > parent->get_height())
+			t_rect.y = bounding_rect.y - t_rect.h - 5;
+
 		SDL_Rect t_o_rect = {t_rect.x - 1, t_rect.y - 1, t_rect.w + 2, t_rect.h + 2};
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -48,7 +57,7 @@ void Button::draw()
 
 		SDL_RenderFillRect(renderer, &t_rect);
 
-		tooltip_texture.render(renderer, bounding_rect.x - 3, bounding_rect.y + bounding_rect.h + 10);
+		tooltip_texture.render(renderer, t_rect.x + 2, t_rect.y);
 	}
 
 	// draw the image on the screen

@@ -38,7 +38,8 @@ public:
 			  id(_id), parent(p), tooltip_font(t_font),
 			  tooltip_texture(t_font, 150, 0, 0, 0, false)
 	{
-		bg_img.load_from_file(renderer, img_path, 255, 255, 255);
+		if (img_path != "")
+			bg_img.load_from_file(renderer, img_path, 255, 255, 255);
 		tooltip_texture.set_text(r, tip);
 	}
 

@@ -94,7 +94,7 @@ public:
 			visible_char_end = str.length();
 		}
 
-		std::cout << "line: " << lines[0] << std::endl;
+		//std::cout << "line: " << lines[0] << std::endl;
 
 		load_from_rendered_text(r);
 	}
@@ -220,10 +220,10 @@ public:
 
 		if (index >= 0)
 		{
-			std::cout << "line before: " << line << std::endl;
+			//std::cout << "line before: " << line << std::endl;
 			line = line.erase(index, 1);
 			lines[current_line] = line;
-			std::cout << "line after: " << line << std::endl;
+			//std::cout << "line after: " << line << std::endl;
 
 			if (!multiline)
 			{
@@ -251,10 +251,10 @@ public:
 					+ lines[current_line].length()
 					< max_chars_per_line)
 				{
-					std::cout << "blah" << std::endl;
+					//std::cout << "blah" << std::endl;
 					lines[current_line - 1] += lines[current_line];
 					index = lines[current_line - 1].length() - lines[current_line].length();
-					std::cout << "index after mod: " << index << std::endl;
+					//std::cout << "index after mod: " << index << std::endl;
 					lines[current_line] = "";
 
 					// shift every other line down 1

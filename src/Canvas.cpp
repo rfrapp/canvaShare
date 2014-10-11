@@ -99,6 +99,47 @@ void Canvas::draw()
 	if (current_tool_index != -1)
 		tools[current_tool_index]->draw(renderer);
 
+	// Draw a rectangle of the foreground color
+	SDL_Rect fg_rect = foreground_rect.getSDL_Rect();
+	SDL_Rect fg_o_rect = {fg_rect.x - 1, fg_rect.y - 1, fg_rect.w + 2, 
+	                      fg_rect.h + 2};
+	
+	if (!background_selected)
+		SDL_SetRenderDrawColor(renderer, 255, 255, 96, 255);
+	else
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	
+	SDL_RenderFillRect(renderer, &fg_o_rect);
+
+	SDL_SetRenderDrawColor(renderer, fg_r, fg_g, fg_b, 255);
+	SDL_RenderFillRect(renderer, &fg_rect);
+
+	// Draw a rectangle of the background color
+	SDL_SetRenderDrawColor(renderer, bg_r, bg_g, bg_b, 255);
+	SDL_Rect bg_rect = background_rect.getSDL_Rect();
+	SDL_Rect bg_o_rect = {bg_rect.x - 1, bg_rect.y - 1, bg_rect.w + 2, 
+	                      bg_rect.h + 2};
+	
+	if (background_selected)
+		SDL_SetRenderDrawColor(renderer, 255, 255, 96, 255);
+	else
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	
+	SDL_RenderFillRect(renderer, &bg_o_rect);
+
+	SDL_SetRenderDrawColor(renderer, bg_r, bg_g, bg_b, 255);
+	SDL_RenderFillRect(renderer, &bg_rect);
+
+	// draw rects for colors
+	for (int i = 0; i < color_rects.size(); i++)
+	{
+		SDL_Rect tmp_c_rect = color_rects[i].getSDL_Rect();
+		int r = 0, g = 0, b = 0;
+
+		SDL_SetRenderDrawColor(renderer, color_rects[i].r, color_rects[i].g, color_rects[i].b, 255);
+		SDL_RenderFillRect(renderer, &tmp_c_rect);
+	}
+
 }
 
 void Canvas::handle_input(SDL_Event *e)
@@ -109,6 +150,36 @@ void Canvas::handle_input(SDL_Event *e)
 
 	if (current_tool_index != -1)
 		tools[current_tool_index]->handle_input(e);
+
+	if (e->type == SDL_MOUSEBUTTONUP)
+	{
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+
+		if (background_rect.collide_point(x, y))
+			background_selected = true;
+		else if (foreground_rect.collide_point(x, y))
+			background_selected = false;
+
+		for (int i = 0; i < color_rects.size(); i++)
+		{
+			if (color_rects[i].collide_point(x, y))
+			{
+				if (background_selected)
+				{
+					bg_r = color_rects[i].r;
+					bg_g = color_rects[i].g;
+					bg_b = color_rects[i].b;
+				}
+				else
+				{
+					fg_r = color_rects[i].r;
+					fg_g = color_rects[i].g;
+					fg_b = color_rects[i].b;
+				}
+			}
+		}
+	}
 }
 
 bool Canvas::load_media()
@@ -174,10 +245,10 @@ void Canvas::init_controls()
 		        "images/icons.png", 308, 0, 26, 30);
 	start_x += 35;
 
-	Button *previous_page_button = new Button(PREVPAGE_ID, this, renderer, font, 30, 26, w / 2 - 35, h - 35, "Previous Page",
+	Button *previous_page_button = new Button(PREVPAGE_ID, this, renderer, font, 30, 26, w / 2 - 35, h - 35, "Previous",
 		        "images/icons.png", 61, 0, 26, 30);
 
-	Button *next_page_button = new Button(NEXTPAGE_ID, this, renderer, font, 30, 25, w / 2 + 35, h - 35, "Next Page",
+	Button *next_page_button = new Button(NEXTPAGE_ID, this, renderer, font, 30, 25, w / 2 + 35, h - 35, "Next",
 		        "images/icons.png", 87, 0, 25, 30);
 
 	PaintBrushTool *ptool      = new PaintBrushTool(this, draw_bounds);
@@ -225,6 +296,42 @@ void Canvas::init_controls()
 	// add next page tool
 	controls.push_back(next_page_button);
 	tools.push_back(nextpagetool);
+
+	// setup the rectangles for colors and the
+	// foreground and background
+	foreground_rect.x = w - 105;
+	foreground_rect.y = 5;
+	foreground_rect.w = 30;
+	foreground_rect.h = 30;
+
+	background_rect.x = w - 70;
+	background_rect.y = 5;
+	background_rect.w = 30;
+	background_rect.h = 30;
+
+	// Set up color rectangles 
+	int start_y = 40;
+	ColorRect black_rect(w - 35, start_y, 30, 30, 0, 0, 0);
+	start_y += 35;
+
+	ColorRect blue_rect(w - 35, start_y, 30, 30, 0, 0, 255);
+	start_y += 35;
+
+	ColorRect red_rect(w - 35, start_y, 30, 30, 255, 0, 0);
+	start_y += 35;
+
+	ColorRect green_rect(w - 35, start_y, 30, 30, 0, 255, 0);
+	start_y += 35;
+
+	ColorRect yellow_rect(w - 35, start_y, 30, 30, 255, 255, 96);	
+	start_y += 35;
+
+	color_rects.push_back(black_rect);
+	color_rects.push_back(blue_rect);
+	color_rects.push_back(red_rect);
+	color_rects.push_back(green_rect);
+	color_rects.push_back(yellow_rect);
+
 }
 
 void Canvas::add_page()

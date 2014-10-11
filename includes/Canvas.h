@@ -22,6 +22,7 @@
 #include "PreviousPageTool.h"
 #include "NextPageTool.h"
 #include "CanvasItem.h"
+#include "ColorRect.h"
 
 class Tool;
 
@@ -72,15 +73,20 @@ private:
 	int current_page;
 	std::vector< Texture > pages;
 
+	Rect foreground_rect; 
+	Rect background_rect;
+	std::vector< ColorRect > color_rects;
+	bool background_selected;
+
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
 	      : w(width), h(height), renderer(r),
 	        foreground(0x000000), background(0xFFFFFFFF),
 	        cursor(""), current_tool_index(-1),
-	        draw_bounds(10, 40, width - 20, height - 80),
+	        draw_bounds(10, 40, width - 50, height - 80),
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
 	        bg_r(0), bg_g(0), bg_b(0), bg_a(255),
-	        current_page(0)
+	        current_page(0), background_selected(true)
 	{
 	}
 
