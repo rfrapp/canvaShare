@@ -60,9 +60,9 @@ public:
 		close();
 
 		// Open the file with the mode flags 
-		read_stream.open(path.c_str(), read_mode);
+		read_stream.open(path.c_str(), std::ios::in | std::ios::out);
 
-		write_stream.open(path.c_str(), write_mode);
+		write_stream.open(path.c_str(), std::ios::in | std::ios::out);
 	}
 
 	// Clsoe the file if it's open
