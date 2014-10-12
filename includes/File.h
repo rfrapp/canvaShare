@@ -60,9 +60,9 @@ public:
 		close();
 
 		// Open the file with the mode flags 
-		read_stream.open(path, read_mode);
+		read_stream.open(path.c_str(), read_mode);
 
-		write_stream.open(path, write_mode);
+		write_stream.open(path.c_str(), write_mode);
 	}
 
 	// Clsoe the file if it's open
