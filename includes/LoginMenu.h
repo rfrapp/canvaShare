@@ -18,11 +18,13 @@ private:
 	SDL_Renderer * renderer;
 
 	Font * font;
+	Font * title_font; 
 	Button * login_button;
 	TextBox * username_box; 
 	TextBox * password_box;
 	TextSurface * username_label;
 	TextSurface * password_label;
+	TextSurface * title_surface;
 
 	bool logged_in;
 

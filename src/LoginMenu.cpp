@@ -21,6 +21,7 @@ void LoginMenu::draw()
 
 	username_label->render(renderer, rect.x + 10, rect.y + 10);
 	password_label->render(renderer, rect.x + 10, rect.y + 80);
+	title_surface->render(renderer, w / 2 - title_surface->get_width() / 2, rect.y - 170);
 }
 
 void LoginMenu::handle_input(SDL_Event * e)
@@ -52,6 +53,7 @@ void LoginMenu::handle_input(SDL_Event * e)
 bool LoginMenu::load_media()
 {
 	font = new Font("fonts/cour.ttf", 24);
+	title_font = new Font("fonts/cour.ttf", 54, TTF_STYLE_BOLD);
 
 	return true;
 }
@@ -70,6 +72,9 @@ void LoginMenu::init_controls()
 
 	username_label->set_text(renderer, "Username ");
 	password_label->set_text(renderer, "Password ");
+
+	title_surface = new TextSurface(title_font, 0, 0, 0, 0, false);
+	title_surface->set_text(renderer, "CanvaShare Login");
 }
 
 void LoginMenu::get_notification(std::string event, int id)
