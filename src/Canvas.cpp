@@ -261,7 +261,7 @@ void Canvas::init_controls()
 	Button *next_page_button = new Button(NEXTPAGE_ID, this, renderer, font, 30, 25, w / 2 + 35, h - 35, "Next",
 		        "images/icons.png", 87, 0, 25, 30);
 
-	Button *eraserbutton = new Button(ERASE_ID, this, renderer, font, 26, 30, start_x, 5, "Paintbrush", 
+	Button *eraserbutton = new Button(ERASE_ID, this, renderer, font, 26, 30, start_x, 5, "Eraser", 
 		        "images/icons.png", 496, 0, 26, 30);
 	start_x += 35;
 
