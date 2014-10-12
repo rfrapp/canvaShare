@@ -441,7 +441,14 @@ void Canvas::redo_canvas_item()
 void Canvas::page_left()
 {
 	if (current_page > 0)
+	{
 		current_page--;
+		
+		page_surface = new TextSurface(font, 0, 0, 0, 0, false);
+		std::stringstream stream;
+		stream << "Page " << current_page + 1 << " of " << pages.size();
+		page_surface->set_text(renderer, stream.str());
+	}
 }
 
 void Canvas::page_right()
@@ -453,5 +460,12 @@ void Canvas::page_right()
 		add_page();
 	}
 	else 
+	{
 		current_page++;
+
+		page_surface = new TextSurface(font, 0, 0, 0, 0, false);
+		std::stringstream stream;
+		stream << "Page " << current_page + 1 << " of " << pages.size();
+		page_surface->set_text(renderer, stream.str());
+	}
 }
