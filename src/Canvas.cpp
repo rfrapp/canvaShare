@@ -222,7 +222,8 @@ void Canvas::handle_input(SDL_Event *e)
 			//std::cout << b_rect << std::endl;
 			
 			if (b_rect.collide_point(x, y) && is_move_tool() && 
-				canvas_items[i].get_type() != "erase")
+				canvas_items[i].get_type() != "erase" && 
+				canvas_items[i].get_page() == current_page)
 			{
 				selected_item = i;
 				item_selected = true;
