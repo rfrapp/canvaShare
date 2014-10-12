@@ -72,8 +72,12 @@ bool Program::init()
                 canvas.set_renderer(renderer);
                 canvas.add_page();
 
+                login_menu.set_renderer(renderer);
+
                 if (!load_media())
                     return false;
+
+                login_menu.init_controls();
 
                 canvas.init_controls();
             }
@@ -89,6 +93,8 @@ bool Program::load_media()
     
     // load fonts, imgs, etc here
     canvas.load_media();
+    login_menu.load_media();
+
 
     return success;
 }
@@ -104,29 +110,68 @@ int Program::execute()
     // The main program loop
     while (!quit)
     {
-    	// Check for events
-        while (SDL_PollEvent(&e))
+        while (!login_menu.is_logged_in())
         {
-        	// Check if the user clicked the 'X' button
-        	// on the window. If so, then quit
-        	// the program
-            if (e.type == SDL_QUIT)
-                quit = true;
+            while (SDL_PollEvent(&e))
+            {
+                if (e.type == SDL_QUIT)
+                {
+                    quit = true;
+                    break;
+                }
 
-            canvas.handle_input(&e);
+                login_menu.handle_input(&e);
+            }
+
+            if (quit)
+            {
+                canvas.set_quit(true);
+                break; 
+            }
+
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+            // Clear the screen by drawing over the previous
+            // frame with the RenderClearColor 
+            SDL_RenderClear(renderer);
+
+            // Draw code goes here
+            login_menu.draw();
+
+            // Update the screen with the newly drawn content
+            SDL_RenderPresent(renderer);            
         }
 
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        while (!canvas.has_quit())
+        {
+        	// Check for events
+            while (SDL_PollEvent(&e))
+            {
+            	// Check if the user clicked the 'X' button
+            	// on the window. If so, then quit
+            	// the program
+                if (e.type == SDL_QUIT)
+                {
+                    quit = true;
+                    canvas.set_quit(quit);
+                    break;
+                }
 
-        // Clear the screen by drawing over the previous
-        // frame with the RenderClearColor 
-        SDL_RenderClear(renderer);
+                canvas.handle_input(&e);
+            }
 
-        // Draw code goes here
-        canvas.draw();
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-        // Update the screen with the newly drawn content
-        SDL_RenderPresent(renderer);
+            // Clear the screen by drawing over the previous
+            // frame with the RenderClearColor 
+            SDL_RenderClear(renderer);
+
+            // Draw code goes here
+            canvas.draw();
+
+            // Update the screen with the newly drawn content
+            SDL_RenderPresent(renderer);
+        }
     }
 
     return 0;

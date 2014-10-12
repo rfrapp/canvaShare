@@ -20,6 +20,7 @@ private:
 	bool font_created;
 	bool infinite;
 	bool multiline;
+	bool is_password_box;
 	Font *font;
 	std::vector< std::string > lines;
 	SDL_Color text_color;
@@ -49,7 +50,7 @@ public:
 	TextSurface(Font *f, int maxw, int maxh, int _x=0, int _y=0, bool multi_line=true, bool infinite_width=false, int r=0, int g=0, int b=0) 
 	           : font(f), x(_x), y(_y), max_w(maxw), max_h(maxh),
 	             max_chars_per_line(0), font_created(false), visible_line_start(0), visible_line_end(0),
-				 multiline(multi_line),
+				 multiline(multi_line), is_password_box(false),
 	   			 visible_char_start(0), visible_char_end(0), infinite(infinite_width)
 	{
 		text_color.r = r;
@@ -351,6 +352,7 @@ public:
 	void set_visible_end(int s) { visible_line_end = s; }
 	void set_visible_char_start(int s) { visible_char_start = s; }
 	void set_visible_char_end(int s) { visible_char_end = s; }
+	void set_password_box(bool b) { is_password_box = b; }
 
 	int get_max_lines() const { return max_lines; }
 	int get_max_chars_per_line() const { return max_chars_per_line; }

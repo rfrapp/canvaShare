@@ -77,6 +77,7 @@ private:
 	Rect background_rect;
 	std::vector< ColorRect > color_rects;
 	bool background_selected;
+	bool quit;
 
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
@@ -85,7 +86,7 @@ public:
 	        cursor(""), current_tool_index(-1),
 	        draw_bounds(10, 40, width - 50, height - 80),
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
-	        bg_r(0), bg_g(0), bg_b(0), bg_a(255),
+	        bg_r(0), bg_g(0), bg_b(0), bg_a(255), quit(false),
 	        current_page(0), background_selected(true)
 	{
 	}
@@ -149,6 +150,8 @@ public:
 	void set_renderer(SDL_Renderer *r) { renderer = r; }
 	SDL_Renderer * get_renderer() const { return renderer; }
 
+	bool has_quit() const { return quit; }
+	void set_quit(bool q) { quit = q; }
 	int get_width() const { return w; }
 	int get_height() const { return h; }
 };

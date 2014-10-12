@@ -23,9 +23,21 @@ bool TextSurface::load_from_rendered_text(SDL_Renderer *r)
 	{
 		if (lines.size() > 0)
 		{
-			std::cout << "lines[0]: " << lines[0] << std::endl;
-			for (int i = visible_char_start; i <= visible_char_end; i++)
-				lines_text += lines[0][i];
+			//std::cout << "lines[0]: " << lines[0] << std::endl;
+			if (!is_password_box)
+			{
+				for (int i = visible_char_start; i <= visible_char_end; i++)
+					lines_text += lines[0][i];
+			}
+			else
+			{
+				// THE PROCEDING LINE IS A HOTFIX.
+				// TODO: FIGURE OUT WHAT'S GOING WRONG
+				// WHEN IT'S A PASSWORD BOX 
+				visible_char_end = lines[0].length() - 1;
+				for (int i = visible_char_start; i <= visible_char_end; i++)
+					lines_text += "*";	
+			}
 		}
 	}
 

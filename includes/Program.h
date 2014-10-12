@@ -8,6 +8,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "Canvas.h"
+#include "LoginMenu.h"
 
 class Program
 {
@@ -19,12 +20,14 @@ private:
 	SDL_Renderer *renderer;
     SDL_Event    e;
 
+    LoginMenu login_menu;
     Canvas canvas;
 
 public:
 	Program(int w, int h) : screen_width(w), screen_height(h),
 	                        quit(false), window(NULL), renderer(NULL),
-	                        canvas(renderer, w, h)
+	                        canvas(renderer, w, h),
+	                        login_menu(renderer, w, h)
 	{ 
 	}
 

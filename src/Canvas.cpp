@@ -365,6 +365,9 @@ void Canvas::undo_canvas_item()
 		CanvasItem item = canvas_items[canvas_items.size() - 1];
 		canvas_items.pop_back();
 		undone_items.push_back(item);
+
+		if (item.get_page() != current_page)
+			current_page = item.get_page();
 	}
 }
 void Canvas::redo_canvas_item()
@@ -378,6 +381,9 @@ void Canvas::redo_canvas_item()
 		CanvasItem item = undone_items[undone_items.size() - 1];
 		undone_items.pop_back();
 		canvas_items.push_back(item);
+
+		if (item.get_page() != current_page)
+			current_page = item.get_page();
 	}
 }
 

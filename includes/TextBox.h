@@ -16,6 +16,7 @@ private:
 	int current_line; 
 	bool outline;
 	bool multiline;
+	bool is_password_box;
 
 	Uint8 outline_r, outline_g, outline_b;
 
@@ -29,7 +30,8 @@ public:
 			: Control(r, w, h, x, y, b_r, b_g, b_b, f_r, f_g, f_b),
 			  surface(f, w, h, x, y, multi_line), cursor_rect(x, y, 1, f->get_line_height()),
 			  cursor_pos(0), outline(o), outline_r(o_r), outline_g(o_g),
-			  outline_b(o_b), current_line(0), multiline(multi_line)
+			  outline_b(o_b), current_line(0), multiline(multi_line),
+			  is_password_box(false)
 	{
 		if (!multiline)
 		{
@@ -310,6 +312,8 @@ public:
 		    }
 		}
 	}
+
+	void set_password_box(bool b) { is_password_box = b; surface.set_password_box(b); }
 
 	std::string text() const { return surface.text(); }
 };
