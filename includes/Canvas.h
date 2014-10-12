@@ -6,6 +6,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <vector>
+#include <sstream>
 
 #include "Control.h"
 #include "Button.h"
@@ -24,6 +25,7 @@
 #include "CanvasItem.h"
 #include "ColorRect.h"
 #include "EraserTool.h"
+#include "TextSurface.h"
 
 class Tool;
 
@@ -81,6 +83,8 @@ private:
 	bool background_selected;
 	bool quit;
 
+	TextSurface * page_surface;
+
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
 	      : w(width), h(height), renderer(r),
@@ -89,7 +93,7 @@ public:
 	        draw_bounds(10, 40, width - 50, height - 80),
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
 	        bg_r(0), bg_g(0), bg_b(0), bg_a(255), quit(false),
-	        current_page(0), background_selected(true)
+	        current_page(0), background_selected(true), page_surface(NULL)
 	{
 	}
 
@@ -105,6 +109,9 @@ public:
 
 		// Clear the memory allocated for the font
 		font->destroy();
+
+		if (page_surface != NULL)
+			delete page_surface;
 	}
 
 	// Creates the Control objects needed for the

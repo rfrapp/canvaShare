@@ -150,6 +150,9 @@ void Canvas::draw()
 		SDL_RenderFillRect(renderer, &tmp_c_rect);
 	}
 
+	// Draw the "Page x of y" label
+	page_surface->render(renderer, 10, h - 35);
+
 }
 
 void Canvas::handle_input(SDL_Event *e)
@@ -363,6 +366,14 @@ void Canvas::add_page()
 		current_page++;
 
 	std::cout << pages.size() << std::endl;
+
+	if (page_surface != NULL)
+		delete page_surface;
+
+	page_surface = new TextSurface(font, 0, 0, 0, 0, false);
+	std::stringstream stream;
+	stream << "Page " << current_page + 1 << " of " << pages.size();
+	page_surface->set_text(renderer, stream.str());
 }
 
 void Canvas::add_canvas_item(const CanvasItem & i) 

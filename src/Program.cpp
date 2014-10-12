@@ -70,7 +70,6 @@ bool Program::init()
                 // Set the canvas' renderer to the newly created
                 // one 
                 canvas.set_renderer(renderer);
-                canvas.add_page();
 
                 login_menu.set_renderer(renderer);
 
@@ -78,7 +77,7 @@ bool Program::init()
                     return false;
 
                 login_menu.init_controls();
-
+                canvas.add_page();
                 canvas.init_controls();
             }
         }
