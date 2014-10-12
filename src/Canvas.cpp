@@ -71,6 +71,16 @@ void Canvas::draw()
 	                   canvas_items[i].get_background_b(),
 	                   canvas_items[i].get_background_a());
 			}
+			else if (canvas_items[i].get_type() == "erase")
+			{
+				for (int j = 0; j < canvas_items[i].points.size(); j++)
+				{
+					filledCircleRGBA(renderer, canvas_items[i].points[j].x, 
+						       canvas_items[i].points[j].y, 
+						       canvas_items[i].get_brush_radius(), 
+						       255, 255, 255, 255);
+				}
+			}
 		}
 	}
 
@@ -251,6 +261,10 @@ void Canvas::init_controls()
 	Button *next_page_button = new Button(NEXTPAGE_ID, this, renderer, font, 30, 25, w / 2 + 35, h - 35, "Next",
 		        "images/icons.png", 87, 0, 25, 30);
 
+	Button *eraserbutton = new Button(ERASE_ID, this, renderer, font, 26, 30, start_x, 5, "Paintbrush", 
+		        "images/icons.png", 496, 0, 26, 30);
+	start_x += 35;
+
 	PaintBrushTool *ptool      = new PaintBrushTool(this, draw_bounds);
 	RectangleTool *recttool    = new RectangleTool(this, draw_bounds);
 	TriangleTool *tritool      = new TriangleTool(this, draw_bounds);
@@ -260,6 +274,7 @@ void Canvas::init_controls()
 	ScreenshotTool *screentool = new ScreenshotTool(this, draw_bounds);
 	NextPageTool *nextpagetool = new NextPageTool(this, draw_bounds);
 	PreviousPageTool *prevtool = new PreviousPageTool(this, draw_bounds);
+	EraserTool *erasetool      = new EraserTool(this, draw_bounds);
 
 	// add paint brush tool
 	tools.push_back(ptool);
@@ -296,6 +311,10 @@ void Canvas::init_controls()
 	// add next page tool
 	controls.push_back(next_page_button);
 	tools.push_back(nextpagetool);
+
+	// add the eraser tool
+	tools.push_back(erasetool);
+	controls.push_back(eraserbutton);
 
 	// setup the rectangles for colors and the
 	// foreground and background

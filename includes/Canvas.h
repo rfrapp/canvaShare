@@ -23,6 +23,7 @@
 #include "NextPageTool.h"
 #include "CanvasItem.h"
 #include "ColorRect.h"
+#include "EraserTool.h"
 
 class Tool;
 
@@ -39,7 +40,8 @@ private:
 		REDO_ID,
 		SCREENSHOT_ID,
 		PREVPAGE_ID,
-		NEXTPAGE_ID
+		NEXTPAGE_ID,
+		ERASE_ID
 	};
 
 	// The width and height of the canvas
