@@ -81,6 +81,18 @@ void Canvas::draw()
 						       255, 255, 255, 255);
 				}
 			}
+			else if (canvas_items[i].get_type() == "pencil")
+			{
+				for (int j = 0; j < canvas_items[i].points.size(); j++)
+				{
+					pixelRGBA(renderer, canvas_items[i].points[j].x, 
+						       canvas_items[i].points[j].y, 
+						       canvas_items[i].get_foreground_r(), 
+						       canvas_items[i].get_foreground_g(), 
+						       canvas_items[i].get_foreground_b(), 
+						       canvas_items[i].get_foreground_a());
+				}
+			}
 		}
 	}
 
@@ -234,6 +246,10 @@ void Canvas::init_controls()
 		        "images/icons.png", 0, 0, 30, 30);
 	start_x += 35;
 
+	Button *pencilbutton = new Button(PENCIL_ID, this, renderer, font, 27, 30, start_x, 5, "Pencil", 
+		        "images/icons.png", 278, 0, 27, 30);
+	start_x += 35;	
+
 	Button *rectbutton = new Button(RECTANGLE_ID, this, renderer, font, 30, 30, start_x, 5, "Rectangle", 
 		        "images/icons.png", 154, 0, 30, 30);
 	start_x += 35;
@@ -269,6 +285,7 @@ void Canvas::init_controls()
 	start_x += 35;
 
 	PaintBrushTool *ptool      = new PaintBrushTool(this, draw_bounds);
+	PencilTool *penciltool     = new PencilTool(this, draw_bounds);
 	RectangleTool *recttool    = new RectangleTool(this, draw_bounds);
 	TriangleTool *tritool      = new TriangleTool(this, draw_bounds);
 	CircleTool *circletool     = new CircleTool(this, draw_bounds);
@@ -282,6 +299,10 @@ void Canvas::init_controls()
 	// add paint brush tool
 	tools.push_back(ptool);
 	controls.push_back(paintbutton);
+
+	// add pencil tool
+	tools.push_back(penciltool);
+	controls.push_back(pencilbutton);
 
 	// add rectangle
 	tools.push_back(recttool);

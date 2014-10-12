@@ -26,6 +26,7 @@
 #include "ColorRect.h"
 #include "EraserTool.h"
 #include "TextSurface.h"
+#include "PencilTool.h"
 
 class Tool;
 
@@ -35,6 +36,7 @@ private:
 	enum Tool_IDs
 	{
 		PAINT_BRUSH_ID = 0,
+		PENCIL_ID,
 		RECTANGLE_ID,
 		TRIANGLE_ID,
 		CIRCLE_ID,
