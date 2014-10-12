@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include "Rect.h"
 
 struct Point 
 {
@@ -50,6 +51,56 @@ public:
 	std::string get_type() const { return type; }
 	int get_brush_radius() const { return brush_radius; }
 	int get_page() const { return page; }
+
+	Rect get_bounding_rect()
+	{
+		int minx = points[0].x;
+		int maxx = points[0].x;
+		int miny = points[0].y;
+		int maxy = points[0].y;
+
+		// Get the minimum X value for the left
+		// side of the rect
+		for (int i = 0; i < points.size(); i++)
+		{
+			if (points[i].x < minx)
+				minx = points[i].x;
+		}
+
+		// Get the maximum X value for the right
+		// side of the rect
+		for (int i = 0; i < points.size(); i++)
+		{
+			if (points[i].x > maxx)
+				maxx = points[i].x;
+		}
+
+		// Get the minimum Y value for the top 
+		// side of the rect
+		for (int i = 0; i < points.size(); i++)
+		{
+			if (points[i].y < miny)
+				miny = points[i].y;
+		}
+
+		// Get the maximum Y value for the bottom
+		// side of the rect
+		for (int i = 0; i < points.size(); i++)
+		{
+			if (points[i].y > maxy)
+				maxy = points[i].y;
+		}
+
+		if (type == "paint")
+		{
+			minx -= brush_radius;
+			maxx += brush_radius;
+			miny -= brush_radius;
+			maxy += brush_radius;
+		}
+
+		return Rect(minx, miny, maxx - minx, maxy - miny);
+	}
 
 	void set_page(int p) { page = p; }
 	void set_brush_radius(int r) { brush_radius = r; }

@@ -93,6 +93,14 @@ void Canvas::draw()
 						       canvas_items[i].get_foreground_a());
 				}
 			}
+
+			if (selected_item == i)
+			{
+				SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+				SDL_Rect rectangle = canvas_items[i].get_bounding_rect().getSDL_Rect();
+
+				SDL_RenderDrawRect(renderer, &rectangle);
+			}
 		}
 	}
 
@@ -204,7 +212,39 @@ void Canvas::handle_input(SDL_Event *e)
 				}
 			}
 		}
+
+		bool item_selected = false;
+
+		for (int i = canvas_items.size() - 1; i >= 0; i--)
+		{
+			Rect b_rect = canvas_items[i].get_bounding_rect();
+			
+			//std::cout << b_rect << std::endl;
+			
+			if (b_rect.collide_point(x, y) && is_move_tool() && 
+				canvas_items[i].get_type() != "erase")
+			{
+				selected_item = i;
+				item_selected = true;
+			}
+		}
+
+		if (!item_selected)
+			selected_item = -1;
 	}
+}
+
+bool Canvas::is_move_tool() const 
+{
+	bool move = true;
+
+	for (int i = 0; i < tools.size(); i++)
+	{
+		if (tools[i]->is_active())
+			move = false;
+	}
+
+	return move;
 }
 
 bool Canvas::load_media()

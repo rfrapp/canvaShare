@@ -84,6 +84,7 @@ private:
 	std::vector< ColorRect > color_rects;
 	bool background_selected;
 	bool quit;
+	int selected_item;
 
 	TextSurface * page_surface;
 
@@ -95,7 +96,8 @@ public:
 	        draw_bounds(10, 40, width - 50, height - 80),
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
 	        bg_r(0), bg_g(0), bg_b(0), bg_a(255), quit(false),
-	        current_page(0), background_selected(true), page_surface(NULL)
+	        current_page(0), background_selected(true), page_surface(NULL),
+	        selected_item(-1)
 	{
 	}
 
@@ -156,6 +158,7 @@ public:
 
 	// Loads fonts, images, etc.
 	bool load_media();
+	bool is_move_tool() const;
 
 	// Setter for the renderer property 
 	void set_renderer(SDL_Renderer *r) { renderer = r; }
