@@ -35,11 +35,11 @@ public:
         char ip[20];
         if (is_online)
         {
-            std::cin.get_line(ip, 20);
+            std::cin.getline(ip, 20);
         }
         if (is_online)
         {
-            
+            net = new net;
         }
 	}
 

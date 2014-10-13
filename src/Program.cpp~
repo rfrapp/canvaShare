@@ -186,6 +186,4 @@ void Program::cleanup()
 
     IMG_Quit();
     SDL_Quit();
-
-    delete net;
 }
