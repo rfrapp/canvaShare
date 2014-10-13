@@ -168,6 +168,11 @@ public:
 	void page_right();
 	int get_page() const { return current_page; }
 
+    void send_canvas_item(const CanvasItem & item)
+    {
+        std::cout << item.to_sring();
+    }
+
 	// Loads fonts, images, etc.
 	bool load_media();
 	bool is_move_tool() const;
