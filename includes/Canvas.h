@@ -27,6 +27,7 @@
 #include "EraserTool.h"
 #include "TextSurface.h"
 #include "PencilTool.h"
+#include "Network.h"
 
 class Tool;
 

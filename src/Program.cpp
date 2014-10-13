@@ -1,6 +1,29 @@
 
 #include "Program.h"
 
+Program::Program()
+{
+    screen_width = w;
+    screen_height = h;
+    quit = false;
+    window = NULL;
+    renderer = NULL;
+    canvas = Canvas(renderer, w, h);
+    login_menu = LoginMenu(renderer, w, h);
+    is_online = true;
+    
+    char ip[20];
+    if (is_online)
+    {
+        std::cin.getline(ip, 20);
+    }
+    if (is_online)
+    {
+        net = new Network(ip);
+    }
+}
+
+
 bool Program::initialize_program()
 {
 	if (!init())
@@ -178,6 +201,9 @@ int Program::execute()
 
 void Program::cleanup()
 {
+    
+    delete net;
+
 	SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 
@@ -186,6 +212,4 @@ void Program::cleanup()
 
     IMG_Quit();
     SDL_Quit();
-
-    delete net;
 }

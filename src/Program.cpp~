@@ -178,6 +178,9 @@ int Program::execute()
 
 void Program::cleanup()
 {
+    
+    delete net;
+
 	SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 
