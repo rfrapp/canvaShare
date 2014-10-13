@@ -1,0 +1,23 @@
+#ifndef NETWORK_H
+#define NETWORK_H
+
+
+#include <SDL2/SDL_net>
+#include <iostream>
+#include <cstring>
+#include "Program.h"
+#include "Canvas.h"
+
+
+class network
+{
+private:
+    
+public:
+    SDLNet_TCP_Socket
+};
+
+
+
+
+#endif
