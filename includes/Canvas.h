@@ -88,6 +88,9 @@ private:
 
 	TextSurface * page_surface;
 
+	Point * clicked_pos;
+	Point * last_move_pos;
+
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
 	      : w(width), h(height), renderer(r),
@@ -97,7 +100,7 @@ public:
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
 	        bg_r(0), bg_g(0), bg_b(0), bg_a(255), quit(false),
 	        current_page(0), background_selected(true), page_surface(NULL),
-	        selected_item(-1)
+	        selected_item(-1), clicked_pos(NULL), last_move_pos(NULL)
 	{
 	}
 
@@ -116,6 +119,9 @@ public:
 
 		if (page_surface != NULL)
 			delete page_surface;
+
+		if (clicked_pos != NULL)
+			delete clicked_pos;
 	}
 
 	// Creates the Control objects needed for the

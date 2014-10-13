@@ -26,6 +26,10 @@ private:
 	TextSurface * password_label;
 	TextSurface * title_surface;
 
+	TextBox * new_username_box;
+	TextBox * new_password_box;
+	Button * register_button;
+
 	bool logged_in;
 
 public:
@@ -42,6 +46,7 @@ public:
 	void get_notification(std::string event, int id);
 
 	void authenticate();
+	void register_user();
 
 	~LoginMenu()
 	{

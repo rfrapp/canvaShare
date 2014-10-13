@@ -313,6 +313,7 @@ public:
 		}
 	}
 
+	void set_text(SDL_Renderer *renderer, std::string t) { surface.set_text(renderer, t); }
 	void set_password_box(bool b) { is_password_box = b; surface.set_password_box(b); }
 
 	std::string text() const { return surface.text(); }

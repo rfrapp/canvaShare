@@ -50,8 +50,8 @@ void Canvas::draw()
 			else if (canvas_items[i].get_type() == "triangle" && canvas_items[i].points.size() > 1)
 			{
 
-				filledTrigonRGBA(renderer, (canvas_items[i].points[1].x + canvas_items[i].points[0].x) / 2, 
-					      (canvas_items[i].points[1].y + canvas_items[i].points[0].y) / 2, 
+				filledTrigonRGBA(renderer, canvas_items[i].points[1].x - (canvas_items[i].points[1].x - canvas_items[i].points[0].x) / 2, 
+				          canvas_items[i].points[0].y, 
 					      canvas_items[i].points[1].x, canvas_items[i].points[1].y, 
 	                      canvas_items[i].points[0].x, canvas_items[i].points[1].y, 
 	                      canvas_items[i].get_background_r(), 
@@ -227,11 +227,50 @@ void Canvas::handle_input(SDL_Event *e)
 			{
 				selected_item = i;
 				item_selected = true;
+
+				if (clicked_pos != NULL)
+					delete clicked_pos;
+
+				clicked_pos = new Point;
+				clicked_pos->x = x;
+				clicked_pos->y = y;
 			}
 		}
 
 		if (!item_selected)
+		{
 			selected_item = -1;
+			delete clicked_pos;
+		}
+	}
+	else if (e->type == SDL_MOUSEMOTION)
+	{
+		if (selected_item != -1)
+		{
+			int x, y;
+
+			if (SDL_GetMouseState(&x, &y) & SDL_BUTTON(SDL_BUTTON_LEFT))
+			{
+				// if (last_move_pos == NULL)
+				// {
+				// 	last_move_pos = new Point; 
+				// 	last_move_pos->x = x;
+				// 	last_move_pos->y = y;
+
+				// 	if (clicked_pos != NULL)
+				// 		canvas_items[selected_item].move(x - clicked_pos->x, y - clicked_pos->y);
+				// }
+				// else
+				// {
+				// 	if (x != last_move_pos->x && y != last_move_pos->y)
+				// 	{
+				// 		last_move_pos->x = x;
+				// 		last_move_pos->y = y;
+				// 		canvas_items[selected_item].move(x - clicked_pos->x, y - clicked_pos->y);
+				// 	}
+				// }
+			}
+		}
 	}
 }
 

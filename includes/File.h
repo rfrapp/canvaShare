@@ -98,6 +98,18 @@ public:
 		return lines;
 	}
 
+	void write_delimited_to_file(std::vector< std::vector< std::string > > users)
+	{
+		for (int i = 0; i < users.size(); i++)
+		{
+			for (int j = 0; j < users[i].size(); j++)
+			{
+				write_stream << users[i][j] << " ";
+			}
+			write_stream << '\n';
+		}
+	}
+
 	std::vector< std::vector< std::string > > get_lines_delimited(char del=' ')
 	{
 		std::vector< std::vector< std::string > > v;

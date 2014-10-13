@@ -102,6 +102,15 @@ public:
 		return Rect(minx, miny, maxx - minx, maxy - miny);
 	}
 
+	void move(int dx, int dy)
+	{
+		for (int i = 0; i < points.size(); i++)
+		{
+			points[i].x += dx;
+			points[i].y += dy;
+		}
+	}
+
 	void set_page(int p) { page = p; }
 	void set_brush_radius(int r) { brush_radius = r; }
 	
