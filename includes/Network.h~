@@ -2,19 +2,25 @@
 #define NETWORK_H
 
 
-#include <SDL2/SDL_net>
+#include <SDL2/SDL_net.h>
 #include <iostream>
 #include <cstring>
 #include "Program.h"
 #include "Canvas.h"
+#include "CanvasItem.h"
 
 
-class network
+class Network
 {
-private:
-    
+//private:
+    SDLNet_SocketSet server;
+    TCPsocket connection;
+
+    char tmp[1400];
 public:
-    SDLNet_TCP_Socket
+    Network(const char* ip);
+    ~Network();
+    //void send_canvas_item(std::vector<>)
 };
 
 

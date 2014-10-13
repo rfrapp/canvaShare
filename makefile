@@ -1,5 +1,5 @@
 exe: main.cpp
-	g++ *.cpp src/*.cpp `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf -lSDL2_gfx -Iincludes -I/usr/local/include -L/usr/local/lib -w
+	g++ *.cpp src/*.cpp `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf -lSDL2_gfx -lSDL_net -Iincludes -I/usr/local/include -L/usr/local/lib -w
 r:
 	./a.out
 clean:

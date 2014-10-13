@@ -9,7 +9,7 @@
 
 #include "Canvas.h"
 #include "LoginMenu.h"
-#include "Network.h"
+
 
 class Program
 {
@@ -25,7 +25,7 @@ private:
     Canvas canvas;
 
     bool is_online;
-    Network * net;
+    Network* net;
     
 public:
 	Program(int w, int h);

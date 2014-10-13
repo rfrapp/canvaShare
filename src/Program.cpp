@@ -1,17 +1,21 @@
 
 #include "Program.h"
 
-Program::Program()
+Program::Program(int w, int h)
+    : screen_width(w), screen_height(h), quit(false),
+      window(NULL), renderer(NULL), canvas(renderer, w, h),
+      login_menu(renderer, w, h), is_online(true)
 {
+    /*
     screen_width = w;
     screen_height = h;
     quit = false;
     window = NULL;
     renderer = NULL;
-    canvas = Canvas(renderer, w, h);
-    login_menu = LoginMenu(renderer, w, h);
+    canvas(renderer, w, h);
+    login_menu(renderer, w, h);
     is_online = true;
-    
+    */
     char ip[20];
     if (is_online)
     {
