@@ -7,6 +7,7 @@
 #include <cstring>
 #include "Program.h"
 #include "Canvas.h"
+#include "CanvasItem.h"
 
 
 class network
