@@ -148,6 +148,8 @@ void LoginMenu::authenticate()
 
 void LoginMenu::register_user()
 {
+	SDL_Rect rect = {w / 2 - 345 / 2, h / 2 - 60, 345, 205};
+
 	if (username_box->text() != "" && password_box->text() != "")
 	{
 		File f("user.txt");
@@ -166,8 +168,16 @@ void LoginMenu::register_user()
 		register_button->set_focus(false);
 		show_message = true;
 		message_surface->set_text(renderer, "You have been registered!");
-		username_box->set_text(renderer, "");
-		password_box->set_text(renderer, "");
+		
+		// username_box->set_text(renderer, "");
+		// password_box->set_text(renderer, "");
+	
+		delete username_box;
+		delete password_box;
+
+		username_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 10, true, false);
+		password_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 80, true, false);
+		password_box->set_password_box(true);
 	}
 	else
 	{
