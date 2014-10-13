@@ -25,16 +25,17 @@ private:
 	TextSurface * username_label;
 	TextSurface * password_label;
 	TextSurface * title_surface;
+	TextSurface * message_surface;
 
-	TextBox * new_username_box;
-	TextBox * new_password_box;
 	Button * register_button;
 
+	bool show_message;
 	bool logged_in;
 
 public:
 	LoginMenu(SDL_Renderer * r, int _w, int _h) 
-	    : logged_in(false), w(_w), h(_h), renderer(r)
+	    : logged_in(false), w(_w), h(_h), renderer(r),
+	      show_message(true)
 	{
 	}
 

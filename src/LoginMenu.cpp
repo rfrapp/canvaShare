@@ -4,7 +4,7 @@
 
 void LoginMenu::draw()
 {
-	SDL_Rect rect = {w / 2 - 450, h / 2 - 60, 345, 205};
+	SDL_Rect rect = {w / 2 - 345 / 2, h / 2 - 60, 345, 205};
 
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderDrawRect(renderer, &rect);
@@ -24,13 +24,11 @@ void LoginMenu::draw()
 	password_label->render(renderer, rect.x + 10, rect.y + 80);
 	title_surface->render(renderer, w / 2 - title_surface->get_width() / 2, rect.y - 170);
 
-	// draw register box
-	SDL_Rect otherrect = {w / 2 + 100, h / 2 - 60, 345, 205};
-	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
-	SDL_RenderDrawRect(renderer, &otherrect);
+	if (show_message)
+		message_surface->render(renderer, w / 2 - message_surface->get_width() / 2, rect.y - 90);
 
-	username_label->render(renderer, otherrect.x + 10, otherrect.y + 10);
-	password_label->render(renderer, otherrect.x + 10, otherrect.y + 80);
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+
 
 	SDL_Rect rbutton_rect = register_button->rect().getSDL_Rect();
 	rbutton_rect.x -= 5;
@@ -41,8 +39,6 @@ void LoginMenu::draw()
 	SDL_RenderDrawRect(renderer, &rbutton_rect);
 
 	register_button->draw();
-	new_username_box->draw();
-	new_password_box->draw();
 }
 
 void LoginMenu::handle_input(SDL_Event * e)
@@ -56,21 +52,12 @@ void LoginMenu::handle_input(SDL_Event * e)
 				username_box->set_focus(false);
 				password_box->set_focus(true);
 			}
-			else if (new_username_box->has_focus())
-			{
-				new_username_box->set_focus(false);
-				new_password_box->set_focus(true);
-			}
 		}
 		else if (e->key.keysym.sym == SDLK_RETURN)
 		{
 			if (password_box->has_focus())
 			{
 				authenticate();
-			}
-			else if (new_password_box->has_focus())
-			{
-				register_user();
 			}
 		}
 	}
@@ -79,8 +66,6 @@ void LoginMenu::handle_input(SDL_Event * e)
 	password_box->handle_input(e);
 	login_button->handle_input(e);
 
-	new_username_box->handle_input(e);
-	new_password_box->handle_input(e);
 	register_button->handle_input(e);
 }
 
@@ -94,9 +79,9 @@ bool LoginMenu::load_media()
 
 void LoginMenu::init_controls()
 { 
-	SDL_Rect rect = {w / 2 - 300, h / 2 - 60, 345, 205};
+	SDL_Rect rect = {w / 2 - 345 / 2, h / 2 - 60, 345, 205};
 
-	login_button = new Button(0, this, renderer, font, 92, 30, (rect.x + rect.w) / 2 - 106, h / 2 + 100, "Login",
+	login_button = new Button(0, this, renderer, font, 92, 30, rect.x + 72, h / 2 + 100, "Login",
 		        "images/icons.png", 404, 0, 92, 30);
 
 	username_label = new TextSurface(font, 0, 0, 0, 0, false);
@@ -105,21 +90,18 @@ void LoginMenu::init_controls()
 	username_label->set_text(renderer, "Username ");
 	password_label->set_text(renderer, "Password ");
 
-	username_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width() - 150 , rect.y + 10, true, false);
-	password_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width() - 150, rect.y + 80, true, false);
+	username_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 10, true, false);
+	password_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 80, true, false);
 	password_box->set_password_box(true);
 
 	title_surface = new TextSurface(title_font, 0, 0, 0, 0, false);
 	title_surface->set_text(renderer, "canvaShare");
 
-	SDL_Rect otherrect = {w / 2 + 100, h / 2 - 60, 345, 205};
+	message_surface = new TextSurface(font, 0, 0, 0, 0, false);
 
-	register_button = new Button(1, this, renderer, font, 78, 30, otherrect.x + + 134, h / 2 + 100, "Register",
+	register_button = new Button(1, this, renderer, font, 78, 30, rect.x + 202, h / 2 + 100, "Register",
 		        "images/icons.png", 522, 0, 78, 30);
 
-	new_username_box = new TextBox(renderer, font, 200, 10, otherrect.x + 10 + username_label->get_width() , rect.y + 10, true, false);
-	new_password_box = new TextBox(renderer, font, 200, 10, otherrect.x + 10 + username_label->get_width(), rect.y + 80, true, false);
-	new_password_box->set_password_box(true);
 }
 
 void LoginMenu::get_notification(std::string event, int id)
@@ -166,14 +148,17 @@ void LoginMenu::register_user()
 	users = f.get_lines_delimited();
 
 	std::vector< std::string > v; 
-	v.push_back(new_username_box->text());
-	v.push_back(new_password_box->text());
+	v.push_back(username_box->text());
+	v.push_back(password_box->text());
 
 	users.push_back(v);
 
 	f.write_delimited_to_file(users);
 
-	new_username_box->set_text(renderer, "");
-	new_password_box->set_text(renderer, "");
 	register_button->set_focus(false);
+	show_message = true;
+	message_surface->set_text(renderer, "You have been registered!");
+	username_box->set_text(renderer, "");
+	password_box->set_text(renderer, "");
+
 }
