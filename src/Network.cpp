@@ -23,12 +23,12 @@ Network::Network(const char* ipchar)
     SDLNet_TCP_AddSocket(server, connection);
 }
 
-/*
+
 Network::~Network()
 {
-    SDLNet_TCP_Send(connection, "2 \n", 4);
-    SDLNet_TCP_Close();
-    SDLNetFreeSocketSet(server);
-    SDLNet_Quit();
+    // SDLNet_TCP_Send(connection, "2 \n", 4);
+    // SDLNet_TCP_Close();
+    // SDLNetFreeSocketSet(server);
+    // SDLNet_Quit();
 }
-*/
+

@@ -138,27 +138,42 @@ void LoginMenu::authenticate()
 
 	logged_in = found; 
 	login_button->set_focus(false);
+
+	if (!logged_in)
+	{
+		show_message = true;
+		message_surface->set_text(renderer, "Invalid Credentials");
+	}
 }
 
 void LoginMenu::register_user()
 {
-	File f("user.txt");
-	std::vector< std::vector< std::string > > users;
+	if (username_box->text() != "" && password_box->text() != "")
+	{
+		File f("user.txt");
+		std::vector< std::vector< std::string > > users;
 
-	users = f.get_lines_delimited();
+		users = f.get_lines_delimited();
 
-	std::vector< std::string > v; 
-	v.push_back(username_box->text());
-	v.push_back(password_box->text());
+		std::vector< std::string > v; 
+		v.push_back(username_box->text());
+		v.push_back(password_box->text());
 
-	users.push_back(v);
+		users.push_back(v);
 
-	f.write_delimited_to_file(users);
+		f.write_delimited_to_file(users);
 
-	register_button->set_focus(false);
-	show_message = true;
-	message_surface->set_text(renderer, "You have been registered!");
-	username_box->set_text(renderer, "");
-	password_box->set_text(renderer, "");
+		register_button->set_focus(false);
+		show_message = true;
+		message_surface->set_text(renderer, "You have been registered!");
+		username_box->set_text(renderer, "");
+		password_box->set_text(renderer, "");
+	}
+	else
+	{
+		show_message = true;
+		message_surface->set_text(renderer, "Please fill out all values in the form");
+		register_button->set_focus(false);
+	}
 
 }

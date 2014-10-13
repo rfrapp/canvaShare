@@ -31,9 +31,9 @@ public:
 	std::vector< Point > points; 
 	CanvasItem(std::string t, Uint8 fg_r, Uint8 fg_g, Uint8 fg_b, Uint8 fg_a, 
 		       Uint8 bg_r, Uint8 bg_g, Uint8 bg_b, Uint8 bg_a, 
-		       int brush_radius=1) : type(t), foreground_r(fg_r), foreground_g(fg_g),
+		       int brush_radius=1, int pg=0) : type(t), foreground_r(fg_r), foreground_g(fg_g),
 			   foreground_b(fg_b), foreground_a(fg_a), background_r(bg_r), background_g(bg_g),
-			   background_b(bg_b), background_a(bg_a)
+			   background_b(bg_b), background_a(bg_a), page(pg)
 	{ 
 	}
 	
@@ -113,7 +113,65 @@ public:
 
 	void set_page(int p) { page = p; }
 	void set_brush_radius(int r) { brush_radius = r; }
-	
+	void set_points(std::vector< Point > p) { points = p; }
+
+	static CanvasItem string_to_item(std::string str)
+	{
+		int l = 0;
+		int br = 0, page = 0;
+		Uint8 fr, fg, fb, fa;
+		Uint8 bgr, bg, bb, ba;
+		std::string type = "";
+		std::vector < Point > points;
+		Point tmp;
+		
+		std::stringstream stream;
+		std::string line;
+		stream << str;
+
+		while (getline(stream, line))
+		{
+			if (l == 0)
+				br = atoi(line.c_str());
+			else if (l == 1)
+				type = line.c_str();
+			else if (l == 2)
+				page = atoi(line.c_str());
+			else if (l == 3)
+				fr = atoi(line.c_str());
+			else if (l == 4)
+				fg = atoi(line.c_str());
+			else if (l == 5)
+				fb = atoi(line.c_str());
+			else if (l == 6)
+				fa = atoi(line.c_str());
+			else if (l == 7)
+				br = atoi(line.c_str());
+			else if (l == 8)
+				bg = atoi(line.c_str());
+			else if (l == 9)
+				bb = atoi(line.c_str());
+			else if (l == 10)
+				ba = atoi(line.c_str());
+			else
+			{
+				if (l % 2 == 1)
+					tmp.x = atoi(line.c_str());
+				else
+				{
+					tmp.y = atoi(line.c_str());
+					points.push_back(tmp);
+				}
+			}
+
+			l++;
+		}
+
+		CanvasItem item(type, fr, fg, fb, fa, bgr, bg, bb, ba, br, page);
+		item.set_points(points);
+		return item;
+	}
+
 	std::string to_string() const 
 	{
 		std::string str;
@@ -132,8 +190,8 @@ public:
 
 		for (int i = 0; i < points.size(); i++)
 		{
-			stream << points[i].x 
-				   << points[i].y;
+			stream << points[i].x << '\n' 
+				   << points[i].y << '\n';
 		}
 
 		str = stream.str();

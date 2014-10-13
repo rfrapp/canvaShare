@@ -316,6 +316,14 @@ public:
 	void set_text(SDL_Renderer *renderer, std::string t) { surface.set_text(renderer, t); }
 	void set_password_box(bool b) { is_password_box = b; surface.set_password_box(b); }
 
+	void set_dimensions(int _w, int _h)
+	{
+		bounding_rect.w = _w;
+		bounding_rect.h = _h;
+
+
+	}
+
 	std::string text() const { return surface.text(); }
 };
 
