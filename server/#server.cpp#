@@ -18,8 +18,6 @@ int main(int argc,char** argv)
 
 	const char* text="Hello!\nYou are now connected to canvaShare!\n";
 
-    std::vector canvas;
-    
     while(1)
 	{
 		client=SDLNet_TCP_Accept(server);
@@ -28,7 +26,7 @@ int main(int argc,char** argv)
 			//here you can communitcate with the client
 			SDLNet_TCP_Send(client,text,strlen(text)+1);
 			//SDLNet_TCP_Close(client);
-            SDLNet_TCP_Recv(client, canvas,strlen(canvas)+1);
+            //SDLNet_TCP_Recv(client, canvas,strlen(canvas)+1);
 			break;
 		}
 	}

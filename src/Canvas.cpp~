@@ -549,10 +549,3 @@ void Canvas::page_right()
 		page_surface->set_text(renderer, stream.str());
 	}
 }
-
-
-void Canvas::set_id(int i)
-{
-    is_ready = true;
-    id = i;
-}

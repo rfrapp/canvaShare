@@ -91,12 +91,6 @@ private:
 	Point * clicked_pos;
 	Point * last_move_pos;
 
-    // added for networking
-    // allows for a specific
-    // id for each window
-    int id;
-    bool is_ready;
-    
 public:
 	Canvas(SDL_Renderer *r, int width, int height) 
 	      : w(width), h(height), renderer(r),
@@ -106,7 +100,7 @@ public:
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
 	        bg_r(0), bg_g(0), bg_b(0), bg_a(255), quit(false),
 	        current_page(0), background_selected(true), page_surface(NULL),
-	        selected_item(-1), clicked_pos(NULL), last_move_pos(NULL), id(-1)
+	        selected_item(-1), clicked_pos(NULL), last_move_pos(NULL)
 	{
 	}
 
@@ -180,12 +174,6 @@ public:
 	void set_quit(bool q) { quit = q; }
 	int get_width() const { return w; }
 	int get_height() const { return h; }
-
-    // for changing the network id
-    int get_id() const { return id; }
-    void set_id(int i);
-    // get_is_ready()
-    bool get_is_ready() const { return is_ready; }
 };
 
 #endif

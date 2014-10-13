@@ -23,24 +23,12 @@ private:
     LoginMenu login_menu;
     Canvas canvas;
 
-    bool is_online;
-    network* net;
-    
 public:
 	Program(int w, int h) : screen_width(w), screen_height(h),
 	                        quit(false), window(NULL), renderer(NULL),
 	                        canvas(renderer, w, h),
-	                        login_menu(renderer, w, h), is_online(true)
-	{
-        char ip[20];
-        if (is_online)
-        {
-            std::cin.get_line(ip, 20);
-        }
-        if (is_online)
-        {
-            
-        }
+	                        login_menu(renderer, w, h)
+	{ 
 	}
 
 	~Program() { cleanup(); }
