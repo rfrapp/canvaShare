@@ -170,7 +170,7 @@ public:
 
     void send_canvas_item(const CanvasItem & item)
     {
-        std::cout << item.to_sring();
+        std::cout << item.to_string();
     }
 
 	// Loads fonts, images, etc.
