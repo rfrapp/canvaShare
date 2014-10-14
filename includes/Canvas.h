@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 
+//#include "Program.h"
 #include "Control.h"
 #include "Button.h"
 #include "TextBox.h"
@@ -30,6 +31,8 @@
 #include "Network.h"
 
 class Tool;
+
+class Program;
 
 class Canvas : public Menu 
 {
@@ -97,9 +100,11 @@ private:
     // id for each window
     int id;
     bool is_ready;
+
+    Program * parent;
     
 public:
-	Canvas(SDL_Renderer *r, int width, int height) 
+	Canvas(SDL_Renderer *r, int width, int height, Program * p) 
 	      : w(width), h(height), renderer(r),
 	        foreground(0x000000), background(0xFFFFFFFF),
 	        cursor(""), current_tool_index(-1),
@@ -107,7 +112,8 @@ public:
 	        brush_radius(1), fg_r(0), fg_g(0), fg_b(0), fg_a(255),
 	        bg_r(0), bg_g(0), bg_b(0), bg_a(255), quit(false),
 	        current_page(0), background_selected(true), page_surface(NULL),
-	        selected_item(-1), clicked_pos(NULL), last_move_pos(NULL), id(-1)
+	        selected_item(-1), clicked_pos(NULL), last_move_pos(NULL), 
+	        id(-1), parent(p)
 	{
 	}
 
@@ -186,6 +192,9 @@ public:
 	void set_quit(bool q) { quit = q; }
 	int get_width() const { return w; }
 	int get_height() const { return h; }
+
+	//std::string canvas_items_to_string();
+	//void send_canvas();
 
     // for changing the network id
     int get_id() const { return id; }

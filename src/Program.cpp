@@ -3,7 +3,7 @@
 
 Program::Program(int w, int h)
     : screen_width(w), screen_height(h), quit(false),
-      window(NULL), renderer(NULL), canvas(renderer, w, h),
+      window(NULL), renderer(NULL), canvas(renderer, w, h, this),
       login_menu(renderer, w, h), is_online(true)
 {
     /*
@@ -206,7 +206,7 @@ int Program::execute()
 void Program::cleanup()
 {
     
-    delete net;
+    //delete net;
 
 	SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);

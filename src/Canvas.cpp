@@ -3,6 +3,7 @@
 #include "Animation.h"
 #include "PaintBrushTool.h"
 #include "Tool.h"
+#include "Program.h"
 
 void Canvas::draw()
 {
@@ -477,14 +478,41 @@ void Canvas::add_page()
 	page_surface->set_text(renderer, stream.str());
 }
 
+/*
+std::string Canvas::canvas_items_to_string() const
+{
+	std::string str;
+	std::string stream;
+	for (int i = 0; i < canvas_items.size(); i++)
+	{
+		stream << canvas_items[i].to_string();
+	}
+	str = stream.str();
+
+	return str;
+}
+*/
+
 void Canvas::add_canvas_item(const CanvasItem & i) 
 { 
 	CanvasItem item = i;
 	item.set_page(current_page);
 
 	undone_items.clear();
-	canvas_items.push_back(item); 
+	canvas_items.push_back(item);
+	//this->send_canvas();
 }
+
+/*
+void Canvas::send_canvas()
+{
+	const char* c_items;
+	std::string str = this->canvas_items_to_string();
+	c_items = str.c_str();
+	SDLNet_TCP_Send(server, c_items, strlen(c_items)+1);
+}
+*/
+
 void Canvas::undo_canvas_item() 
 { 
 	// TODO: Send message to network

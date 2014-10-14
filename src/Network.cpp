@@ -32,3 +32,19 @@ Network::~Network()
     // SDLNet_Quit();
 }
 
+/*
+void Network::send_canvas_items(Canvas* c)
+{
+    if (c->is_ready())
+    {
+        int size = 0;
+        std::string str = c->canvas_items_to_string;
+        int len = strlen(str)+1;
+        tmp = str.c_str();
+        while (size < len)
+        {
+            size += SDLNet_TCP_Send(connection, tmp + size, len - size);
+        }
+    }
+}
+*/
