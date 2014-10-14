@@ -6,7 +6,7 @@
 #include <iostream>
 #include <cstring>
 //#include "Program.h"
-//#include "Canvas.h"
+#include "Canvas.h"
 //#include "CanvasItem.h"
 	
 
@@ -21,7 +21,7 @@ const char* tmp;
 public:
     Network(const char* ipchar);
     ~Network();
-    //void send_canvas_item(Canvas* c);
+    void send_canvas_items(Canvas c);
 };
 
 

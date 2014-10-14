@@ -4,6 +4,8 @@
 #include "PaintBrushTool.h"
 #include "Tool.h"
 #include "Program.h"
+#include <string>
+#include <sstream>
 
 void Canvas::draw()
 {
@@ -478,20 +480,20 @@ void Canvas::add_page()
 	page_surface->set_text(renderer, stream.str());
 }
 
-/*
-std::string Canvas::canvas_items_to_string() const
+
+std::string Canvas::canvas_items_to_string()
 {
 	std::string str;
-	std::string stream;
+	//std::string stream;
 	for (int i = 0; i < canvas_items.size(); i++)
 	{
-		stream << canvas_items[i].to_string();
+		str += (canvas_items[i].to_string());
 	}
-	str = stream.str();
+	//str = stream.c_str();
 
 	return str;
 }
-*/
+
 
 void Canvas::add_canvas_item(const CanvasItem & i) 
 { 

@@ -48,6 +48,12 @@ public:
 	// Quits SDL and all of the subsystems
 	// used as well as deallocates memory
 	void cleanup();
+
+	// Network sends
+	void send_message()
+	{
+		net->send_canvas_items(canvas);
+	}
 };
 
 #endif 

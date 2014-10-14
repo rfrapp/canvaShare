@@ -193,7 +193,7 @@ public:
 	int get_width() const { return w; }
 	int get_height() const { return h; }
 
-	//std::string canvas_items_to_string();
+	std::string canvas_items_to_string();
 	//void send_canvas();
 
     // for changing the network id
