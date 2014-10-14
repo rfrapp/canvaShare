@@ -52,7 +52,7 @@ public:
 	// Network sends
 	void send_message()
 	{
-		net->send_canvas_items(canvas);
+		//net->send_canvas_item(canvas);
 	}
 };
 

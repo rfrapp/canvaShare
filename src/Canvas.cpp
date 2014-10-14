@@ -96,8 +96,15 @@ void Canvas::draw()
 						       canvas_items[i].get_foreground_a());
 				}
 			}
+			else if (canvas_items[i].get_type() == "textbox")
+			{
+				// SDL_SetRenderDrawColor(renderer, 0xBB, 0xBB, 0xBB, 0xFF);
+				// SDL_Rect rectangle = canvas_items[i].get_bounding_rect().getSDL_Rect();
 
-			if (selected_item == i)
+				// SDL_RenderDrawRect(renderer, &rectangle);
+			}
+
+			if (selected_item == i && canvas_items[i].get_type() != "textbox")
 			{
 				SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 				SDL_Rect rectangle = canvas_items[i].get_bounding_rect().getSDL_Rect();
@@ -176,6 +183,9 @@ void Canvas::draw()
 	// Draw the "Page x of y" label
 	page_surface->render(renderer, 10, h - 35);
 
+	for (int i = 0; i < drawn_textboxes.size(); i++)
+		drawn_textboxes[i].draw();
+
 }
 
 void Canvas::handle_input(SDL_Event *e)
@@ -186,6 +196,9 @@ void Canvas::handle_input(SDL_Event *e)
 
 	if (current_tool_index != -1)
 		tools[current_tool_index]->handle_input(e);
+
+	for (int i = 0; i < drawn_textboxes.size(); i++)
+		drawn_textboxes[i].handle_input(e);
 
 	if (e->type == SDL_MOUSEBUTTONUP)
 	{
@@ -325,23 +338,23 @@ void Canvas::set_cursor(std::string c)
 void Canvas::init_controls()
 {
 	int start_x = 10;
-	Button *paintbutton = new Button(PAINT_BRUSH_ID, this, renderer, font, 30, 30, start_x, 5, "Paintbrush", 
+	Button *paintbutton = new Button(PAINT_BRUSH_ID, this, renderer, font, 30, 30, start_x, 5, "Paintbrush tool", 
 		        "images/icons.png", 0, 0, 30, 30);
 	start_x += 35;
 
-	Button *pencilbutton = new Button(PENCIL_ID, this, renderer, font, 27, 30, start_x, 5, "Pencil", 
+	Button *pencilbutton = new Button(PENCIL_ID, this, renderer, font, 27, 30, start_x, 5, "Pencil tool", 
 		        "images/icons.png", 278, 0, 27, 30);
 	start_x += 35;	
 
-	Button *rectbutton = new Button(RECTANGLE_ID, this, renderer, font, 30, 30, start_x, 5, "Rectangle", 
+	Button *rectbutton = new Button(RECTANGLE_ID, this, renderer, font, 30, 30, start_x, 5, "Rectangle tool", 
 		        "images/icons.png", 154, 0, 30, 30);
 	start_x += 35;
 
-	Button *trianglebutton = new Button(TRIANGLE_ID, this, renderer, font, 30, 30, start_x, 5, "Triangle", 
+	Button *trianglebutton = new Button(TRIANGLE_ID, this, renderer, font, 30, 30, start_x, 5, "Triangle tool", 
 		        "images/icons.png", 185, 0, 30, 30);
 	start_x += 35;
 
-	Button *circlebutton = new Button(CIRCLE_ID, this, renderer, font, 30, 30, start_x, 5, "Circle",
+	Button *circlebutton = new Button(CIRCLE_ID, this, renderer, font, 30, 30, start_x, 5, "Circle tool",
 		        "images/icons.png", 213, 0, 30, 30);
 	start_x += 35;
 
@@ -357,14 +370,18 @@ void Canvas::init_controls()
 		        "images/icons.png", 308, 0, 26, 30);
 	start_x += 35;
 
-	Button *previous_page_button = new Button(PREVPAGE_ID, this, renderer, font, 30, 26, w / 2 - 35, h - 35, "Previous",
+	Button *previous_page_button = new Button(PREVPAGE_ID, this, renderer, font, 30, 26, w / 2 - 35, h - 35, "Previous page",
 		        "images/icons.png", 61, 0, 26, 30);
 
-	Button *next_page_button = new Button(NEXTPAGE_ID, this, renderer, font, 30, 25, w / 2 + 35, h - 35, "Next",
+	Button *next_page_button = new Button(NEXTPAGE_ID, this, renderer, font, 30, 25, w / 2 + 35, h - 35, "Next page",
 		        "images/icons.png", 87, 0, 25, 30);
 
-	Button *eraserbutton = new Button(ERASE_ID, this, renderer, font, 26, 30, start_x, 5, "Eraser", 
+	Button *eraserbutton = new Button(ERASE_ID, this, renderer, font, 26, 30, start_x, 5, "Eraser tool", 
 		        "images/icons.png", 496, 0, 26, 30);
+	start_x += 35;
+
+	Button *textboxbutton = new Button(TEXT_ID, this, renderer, font, 22, 30, start_x, 5, "Textbox tool", 
+		        "images/icons.png", 607, 0, 22, 30);
 	start_x += 35;
 
 	PaintBrushTool *ptool      = new PaintBrushTool(this, draw_bounds);
@@ -378,6 +395,7 @@ void Canvas::init_controls()
 	NextPageTool *nextpagetool = new NextPageTool(this, draw_bounds);
 	PreviousPageTool *prevtool = new PreviousPageTool(this, draw_bounds);
 	EraserTool *erasetool      = new EraserTool(this, draw_bounds);
+	TextBoxTool *textboxtool   = new TextBoxTool(this, draw_bounds);
 
 	// add paint brush tool
 	tools.push_back(ptool);
@@ -422,6 +440,9 @@ void Canvas::init_controls()
 	// add the eraser tool
 	tools.push_back(erasetool);
 	controls.push_back(eraserbutton);
+
+	tools.push_back(textboxtool);
+	controls.push_back(textboxbutton);
 
 	// setup the rectangles for colors and the
 	// foreground and background
@@ -504,6 +525,14 @@ void Canvas::add_canvas_item(const CanvasItem & i)
 	canvas_items.push_back(item);
 	//this->send_canvas();
 	parent->send_message();
+
+	if (item.get_type() == "textbox")
+	{
+		TextBox t(renderer, font, 1, 1, item.points[0].x, 
+			      item.points[0].y, true, true, 255, 255, 255,
+			      fg_r, fg_g, fg_b);
+		drawn_textboxes.push_back(t);
+	}
 }
 
 /*

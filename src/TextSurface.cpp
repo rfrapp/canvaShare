@@ -17,6 +17,8 @@ bool TextSurface::load_from_rendered_text(SDL_Renderer *r)
 
 			if (i != lines.size() - 1)
 				lines_text += '\n';
+
+			// std::cout << "line " << i << ": " << lines[i] << std::endl;
 		}
 	}
 	else

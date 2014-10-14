@@ -23,29 +23,12 @@ Network::Network(const char* ipchar)
     SDLNet_TCP_AddSocket(server, connection);
 }
 
-
+/*
 Network::~Network()
 {
-    // SDLNet_TCP_Send(connection, "2 \n", 4);
-    // SDLNet_TCP_Close();
-    // SDLNetFreeSocketSet(server);
-    // SDLNet_Quit();
+    SDLNet_TCP_Send(connection, "2 \n", 4);
+    SDLNet_TCP_Close();
+    SDLNetFreeSocketSet(server);
+    SDLNet_Quit();
 }
-
-
-void Network::send_canvas_items(Canvas c)
-{
-    if (c.get_is_ready())
-    {
-        int size = 0;
-        std::string str = c.canvas_items_to_string();
-        tmp = str.c_str();
-        int len = strlen(tmp)+1;
-        
-        while (size < len)
-        {
-            size += SDLNet_TCP_Send(connection, tmp + size, len - size);
-        }
-    }
-}
-
+*/

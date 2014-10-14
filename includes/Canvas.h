@@ -14,6 +14,7 @@
 #include "TextBox.h"
 #include "Menu.h"
 #include "Texture.h"
+#include "TextBox.h"
 #include "PaintBrushTool.h"
 #include "RectangleTool.h"
 #include "TriangleTool.h"
@@ -23,6 +24,7 @@
 #include "ScreenshotTool.h"
 #include "PreviousPageTool.h"
 #include "NextPageTool.h"
+#include "TextBoxTool.h"
 #include "CanvasItem.h"
 #include "ColorRect.h"
 #include "EraserTool.h"
@@ -49,7 +51,8 @@ private:
 		SCREENSHOT_ID,
 		PREVPAGE_ID,
 		NEXTPAGE_ID,
-		ERASE_ID
+		ERASE_ID,
+		TEXT_ID,
 	};
 
 	// The width and height of the canvas
@@ -79,6 +82,8 @@ private:
 	std::vector< CanvasItem > canvas_items;
 	std::vector< CanvasItem > undone_items; 
 	CanvasItem * copied_item;
+
+	std::vector< TextBox > drawn_textboxes;
 
 	int current_page;
 	std::vector< Texture > pages;
@@ -159,6 +164,7 @@ public:
 	Uint8 get_background_a() const { return bg_a; }
 
 	std::vector< CanvasItem > & get_items() { return canvas_items; }
+	std::vector< TextBox > & get_textboxes() { return drawn_textboxes; }
 
 	void set_brush_radius(int r)  { brush_radius = r; }
 	void increment_brush_radius() { brush_radius++;   }

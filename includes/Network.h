@@ -21,7 +21,7 @@ const char* tmp;
 public:
     Network(const char* ipchar);
     ~Network();
-    void send_canvas_items(Canvas c);
+    void send_canvas_item(CanvasItem c) { }
 };
 
 

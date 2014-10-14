@@ -28,7 +28,7 @@ public:
 		              Uint8 o_r = 0xBB, Uint8 o_g = 0xBB, Uint8 o_b = 0xBB)
 			
 			: Control(r, w, h, x, y, b_r, b_g, b_b, f_r, f_g, f_b),
-			  surface(f, w, h, x, y, multi_line), cursor_rect(x, y, 1, f->get_line_height()),
+			  surface(f, w, h, x, y, multi_line, f_r, f_g, f_b), cursor_rect(x, y, 1, f->get_line_height()),
 			  cursor_pos(0), outline(o), outline_r(o_r), outline_g(o_g),
 			  outline_b(o_b), current_line(0), multiline(multi_line),
 			  is_password_box(false)
@@ -321,7 +321,7 @@ public:
 		bounding_rect.w = _w;
 		bounding_rect.h = _h;
 
-
+		surface.set_dimensions(_w, _h);
 	}
 
 	std::string text() const { return surface.text(); }

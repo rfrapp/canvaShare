@@ -36,7 +36,7 @@ public:
 			  tooltip(tip), bg_img(Texture()), 
 			  img_clip(Rect(clip_x, clip_y, clip_w, clip_h)),
 			  id(_id), parent(p), tooltip_font(t_font),
-			  tooltip_texture(t_font, 150, 0, 0, 0, false)
+			  tooltip_texture(t_font, 0, 0, 0, 0, false)
 	{
 		if (img_path != "")
 			bg_img.load_from_file(renderer, img_path, 255, 255, 255);

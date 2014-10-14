@@ -354,6 +354,19 @@ public:
 	void set_visible_char_end(int s) { visible_char_end = s; }
 	void set_password_box(bool b) { is_password_box = b; }
 
+	void set_dimensions(int width, int height)
+	{
+		max_w = width;
+		max_h = height;
+		w = width;
+		h = height;
+
+		int _w, _h;
+		TTF_SizeText(font->get_ttf(), "a", &_w, &_h);
+		max_chars_per_line = (w / _w) - 1;
+		max_lines = (h / _h) - 1;		
+	}
+
 	int get_max_lines() const { return max_lines; }
 	int get_max_chars_per_line() const { return max_chars_per_line; }
 	int get_visible_start() const { return visible_line_start; }
