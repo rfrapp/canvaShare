@@ -103,14 +103,6 @@ void Canvas::draw()
 
 				// SDL_RenderDrawRect(renderer, &rectangle);
 			}
-
-			if (selected_item == i && canvas_items[i].get_type() != "textbox")
-			{
-				SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
-				SDL_Rect rectangle = canvas_items[i].get_bounding_rect().getSDL_Rect();
-
-				SDL_RenderDrawRect(renderer, &rectangle);
-			}
 		}
 	}
 
@@ -200,13 +192,13 @@ void Canvas::handle_input(SDL_Event *e)
 	for (int i = 0; i < drawn_textboxes.size(); i++)
 		drawn_textboxes[i].handle_input(e);
 
-	if (current_tool_index != -1)
+	if (current_tool_index > -1)
 	{
 		if (!tools[current_tool_index]->is_active() && controls[current_tool_index]->has_focus())
 		{
 			controls[current_tool_index]->set_focus(false);
 			SDL_ShowCursor(SDL_ENABLE);
-			current_tool_index = -1;
+			//current_tool_index = -1;
 		}
 	}
 
@@ -260,41 +252,6 @@ void Canvas::handle_input(SDL_Event *e)
 				clicked_pos = new Point;
 				clicked_pos->x = x;
 				clicked_pos->y = y;
-			}
-		}
-
-		if (!item_selected)
-		{
-			selected_item = -1;
-			delete clicked_pos;
-		}
-	}
-	else if (e->type == SDL_MOUSEMOTION)
-	{
-		if (selected_item != -1)
-		{
-			int x, y;
-
-			if (SDL_GetMouseState(&x, &y) & SDL_BUTTON(SDL_BUTTON_LEFT))
-			{
-				// if (last_move_pos == NULL)
-				// {
-				// 	last_move_pos = new Point; 
-				// 	last_move_pos->x = x;
-				// 	last_move_pos->y = y;
-
-				// 	if (clicked_pos != NULL)
-				// 		canvas_items[selected_item].move(x - clicked_pos->x, y - clicked_pos->y);
-				// }
-				// else
-				// {
-				// 	if (x != last_move_pos->x && y != last_move_pos->y)
-				// 	{
-				// 		last_move_pos->x = x;
-				// 		last_move_pos->y = y;
-				// 		canvas_items[selected_item].move(x - clicked_pos->x, y - clicked_pos->y);
-				// 	}
-				// }
 			}
 		}
 	}
