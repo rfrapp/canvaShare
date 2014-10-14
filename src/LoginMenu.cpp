@@ -154,30 +154,46 @@ void LoginMenu::register_user()
 	{
 		File f("user.txt");
 		std::vector< std::vector< std::string > > users;
+		bool found = false;
 
 		users = f.get_lines_delimited();
 
-		std::vector< std::string > v; 
-		v.push_back(username_box->text());
-		v.push_back(password_box->text());
+		for (int i = 0; i < users.size(); i++)
+		{
+			if (users[i][0] == username_box->text())
+				found = true;
+		}
 
-		users.push_back(v);
+		if (!found)
+		{
+			std::vector< std::string > v; 
+			v.push_back(username_box->text());
+			v.push_back(password_box->text());
 
-		f.write_delimited_to_file(users);
+			users.push_back(v);
 
-		register_button->set_focus(false);
-		show_message = true;
-		message_surface->set_text(renderer, "You have been registered!");
-		
+			f.write_delimited_to_file(users);
+
+			register_button->set_focus(false);
+			show_message = true;
+			message_surface->set_text(renderer, "You have been registered!");
+
+			delete username_box;
+			delete password_box;
+
+			username_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 10, true, false);
+			password_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 80, true, false);
+			password_box->set_password_box(true);
+		}
+		else
+		{
+			show_message = true;
+			message_surface->set_text(renderer, "This username is already registered!");
+			register_button->set_focus(false);	
+		}
+
 		// username_box->set_text(renderer, "");
 		// password_box->set_text(renderer, "");
-	
-		delete username_box;
-		delete password_box;
-
-		username_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 10, true, false);
-		password_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 80, true, false);
-		password_box->set_password_box(true);
 	}
 	else
 	{
@@ -185,5 +201,4 @@ void LoginMenu::register_user()
 		message_surface->set_text(renderer, "Please fill out all values in the form");
 		register_button->set_focus(false);
 	}
-
 }

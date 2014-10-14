@@ -58,6 +58,7 @@ void TextBoxTool::handle_input(SDL_Event *e)
 
 	    		clicked = false;
 	    		parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
+                active = false;
     		}
     	}
 	}

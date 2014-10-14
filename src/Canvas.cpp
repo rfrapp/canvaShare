@@ -114,6 +114,9 @@ void Canvas::draw()
 		}
 	}
 
+	for (int i = 0; i < drawn_textboxes.size(); i++)
+		drawn_textboxes[i].draw();
+
 	// Set the render target back to the default (the window)
 	SDL_SetRenderTarget(renderer, NULL);
 
@@ -183,9 +186,6 @@ void Canvas::draw()
 	// Draw the "Page x of y" label
 	page_surface->render(renderer, 10, h - 35);
 
-	for (int i = 0; i < drawn_textboxes.size(); i++)
-		drawn_textboxes[i].draw();
-
 }
 
 void Canvas::handle_input(SDL_Event *e)
@@ -199,6 +199,16 @@ void Canvas::handle_input(SDL_Event *e)
 
 	for (int i = 0; i < drawn_textboxes.size(); i++)
 		drawn_textboxes[i].handle_input(e);
+
+	if (current_tool_index != -1)
+	{
+		if (!tools[current_tool_index]->is_active() && controls[current_tool_index]->has_focus())
+		{
+			controls[current_tool_index]->set_focus(false);
+			SDL_ShowCursor(SDL_ENABLE);
+			current_tool_index = -1;
+		}
+	}
 
 	if (e->type == SDL_MOUSEBUTTONUP)
 	{
@@ -381,7 +391,7 @@ void Canvas::init_controls()
 	start_x += 35;
 
 	Button *textboxbutton = new Button(TEXT_ID, this, renderer, font, 22, 30, start_x, 5, "Textbox tool", 
-		        "images/icons.png", 607, 0, 22, 30);
+		        "images/icons.png", 601, 0, 22, 30);
 	start_x += 35;
 
 	PaintBrushTool *ptool      = new PaintBrushTool(this, draw_bounds);
