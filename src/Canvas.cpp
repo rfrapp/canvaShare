@@ -107,7 +107,10 @@ void Canvas::draw()
 	}
 
 	for (int i = 0; i < drawn_textboxes.size(); i++)
-		drawn_textboxes[i].draw();
+	{
+		if (drawn_textboxes[i].get_page() == current_page)
+			drawn_textboxes[i].draw();
+	}
 
 	// Set the render target back to the default (the window)
 	SDL_SetRenderTarget(renderer, NULL);
@@ -190,7 +193,10 @@ void Canvas::handle_input(SDL_Event *e)
 		tools[current_tool_index]->handle_input(e);
 
 	for (int i = 0; i < drawn_textboxes.size(); i++)
-		drawn_textboxes[i].handle_input(e);
+	{
+		if (drawn_textboxes[i].get_page() == current_page)
+			drawn_textboxes[i].handle_input(e);
+	}
 
 	if (current_tool_index > -1)
 	{
@@ -498,6 +504,7 @@ void Canvas::add_canvas_item(const CanvasItem & i)
 		TextBox t(renderer, font, 1, 1, item.points[0].x, 
 			      item.points[0].y, true, true, 255, 255, 255,
 			      fg_r, fg_g, fg_b);
+		t.set_page(current_page);
 		drawn_textboxes.push_back(t);
 	}
 }
@@ -538,6 +545,13 @@ void Canvas::undo_canvas_item()
 		canvas_items.pop_back();
 		undone_items.push_back(item);
 
+		if (item.get_type() == "textbox")
+		{
+			TextBox t = drawn_textboxes[drawn_textboxes.size() - 1];
+			undone_textboxes.push_back(t);
+			drawn_textboxes.pop_back();
+		}
+
 		if (item.get_page() != current_page)
 			current_page = item.get_page();
 	}
@@ -554,6 +568,13 @@ void Canvas::redo_canvas_item()
 		CanvasItem item = undone_items[undone_items.size() - 1];
 		undone_items.pop_back();
 		canvas_items.push_back(item);
+
+		if (item.get_type() == "textbox")
+		{
+			TextBox t = undone_textboxes[undone_textboxes.size() - 1];
+			drawn_textboxes.push_back(t);
+			undone_items.pop_back();
+		}
 
 		if (item.get_page() != current_page)
 			current_page = item.get_page();

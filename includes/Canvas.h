@@ -84,6 +84,7 @@ private:
 	CanvasItem * copied_item;
 
 	std::vector< TextBox > drawn_textboxes;
+	std::vector< TextBox > undone_textboxes;
 
 	int current_page;
 	std::vector< Texture > pages;

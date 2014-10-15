@@ -17,6 +17,7 @@ private:
 	bool outline;
 	bool multiline;
 	bool is_password_box;
+	int page;
 
 	Uint8 outline_r, outline_g, outline_b;
 
@@ -31,7 +32,7 @@ public:
 			  surface(f, w, h, x, y, multi_line, f_r, f_g, f_b), cursor_rect(x, y, 1, f->get_line_height()),
 			  cursor_pos(0), outline(o), outline_r(o_r), outline_g(o_g),
 			  outline_b(o_b), current_line(0), multiline(multi_line),
-			  is_password_box(false)
+			  is_password_box(false), page(-1)
 	{
 		if (!multiline)
 		{
@@ -324,8 +325,11 @@ public:
 		}
 	}
 
+	int get_page() const { return page; }
+
 	void set_text(SDL_Renderer *renderer, std::string t) { surface.set_text(renderer, t); }
 	void set_password_box(bool b) { is_password_box = b; surface.set_password_box(b); }
+	void set_page(int p) { page = p; }
 
 	void set_dimensions(int _w, int _h)
 	{
