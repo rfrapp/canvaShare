@@ -128,6 +128,7 @@ public:
 		        		if (current_line == surface.get_visible_start() - 1)
 		        		{
 		        			surface.set_visible_start(current_line);
+		        			surface.set_visible_end(surface.get_visible_end() - 1);
 		        			surface.reload(renderer);
 		        		}
 
@@ -150,13 +151,19 @@ public:
 
 		        		if (current_line == surface.get_visible_end() + 1)
 		        		{
+		        			surface.set_visible_start(surface.get_visible_start() + 1);
 		        			surface.set_visible_end(current_line);
 		        			surface.reload(renderer);
 		        		}
 
-		        		if (cursor_rect.y + surface.get_font()->get_line_height()
-		        			<= bounding_rect.y + bounding_rect.h)
-		        			cursor_rect.y += surface.get_font()->get_line_height();
+		        		if (surface.get_visible_start() == 0)
+		            		cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
+		            	else
+		            		cursor_rect.y = bounding_rect.y + (current_line - surface.get_visible_start()) * surface.get_font()->get_line_height();
+
+		        		// if (cursor_rect.y + surface.get_font()->get_line_height()
+		        		// 	< bounding_rect.y + bounding_rect.h)
+		        		// 	cursor_rect.y += surface.get_font()->get_line_height();
 		        		
 		        		std::string line = surface.get_lines()[current_line];
 
