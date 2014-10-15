@@ -233,7 +233,7 @@ public:
 				for (int i = visible_char_start; i < visible_char_end; i++)
 					s += line[i];
 
-				std::cout << visible_char_start << ' ' << visible_char_end << ": " << s << std::endl;
+				// std::cout << visible_char_start << ' ' << visible_char_end << ": " << s << std::endl;
 
 				// if (visible_char_end > 0)
 				// 	visible_char_end--;
@@ -241,7 +241,7 @@ public:
 				if (visible_char_start > 0)
 					visible_char_start--;
 
-				std::cout << visible_char_start << ' ' << visible_char_end << ": " << s << std::endl;
+				// std::cout << visible_char_start << ' ' << visible_char_end << ": " << s << std::endl;
 			}
 		}
 		else // The user hit delete on the beginning of a line
@@ -269,8 +269,14 @@ public:
 				}
 				else if (index == -1)
 				{
-					std::cout << "I am here!!!" << std::endl;
 					lines.pop_back();
+
+					if (visible_line_start > 0)
+						visible_line_start--;
+
+					if (visible_line_end > 0)
+						visible_line_end--;
+
 					current_line--;
 					index = lines[current_line].length();
 				}

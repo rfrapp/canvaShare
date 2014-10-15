@@ -90,7 +90,8 @@ public:
 		            else
 		           		cursor_rect.x = bounding_rect.x + (cursor_pos - surface.get_visible_char_start()) * surface.get_font()->get_width(&e->text.text[0]);
 
-		            cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
+		           	if (surface.get_visible_start() == 0)
+		            	cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
 		        }
 
 		        if (e->key.keysym.sym == SDLK_RETURN)
@@ -304,7 +305,10 @@ public:
 		  				}
 		  			}
 
-		            cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
+		  			if (surface.get_visible_start() == 0)
+		            	cursor_rect.y = bounding_rect.y + current_line * surface.get_font()->get_line_height();
+		            else
+		            	cursor_rect.y = bounding_rect.y + (current_line - surface.get_visible_start()) * surface.get_font()->get_line_height();
 
 		            // std::cout << "cursor_pos after text input: " << cursor_pos << std::endl;
 
