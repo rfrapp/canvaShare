@@ -44,7 +44,8 @@ void TextBoxTool::handle_input(SDL_Event *e)
                 w = i.points[1].x - i.points[0].x;
                 h = i.points[1].y - i.points[0].y;
 
-                parent->get_textboxes()[parent->get_textboxes().size() - 1].set_dimensions(w, h);
+                parent->resize_textbox(w, h);
+                //parent->get_textboxes()[parent->get_textboxes().size() - 1].set_dimensions(w, h);
     		}
     	}
     	else if (e->type == SDL_MOUSEBUTTONUP && draw_bounds.collide_point(x, y))
@@ -57,7 +58,9 @@ void TextBoxTool::handle_input(SDL_Event *e)
 	    		Point p = {x, y};
 
 	    		clicked = false;
-	    		parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
+	    		
+                parent->add_point_to_item(p);
+                // parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
                 active = false;
     		}
     	}

@@ -174,6 +174,8 @@ public:
 	void add_page();
 
 	void add_canvas_item(const CanvasItem & i);
+	void add_point_to_item(const Point & p);
+	void resize_textbox(const int & _w, const int & _h);
 
 	void undo_canvas_item();
 	void redo_canvas_item();

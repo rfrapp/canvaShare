@@ -1,6 +1,7 @@
 
 #include "Canvas.h"
 #include "PaintBrushTool.h"
+#include <cmath>
 
 PaintBrushTool::PaintBrushTool(Canvas * p, Rect r)
 			   : Tool(p, r), item(NULL), clicked(false)
@@ -36,8 +37,8 @@ void PaintBrushTool::handle_input(SDL_Event *e)
 			                  parent->get_background_b(), parent->get_background_a(), 
 			                  parent->get_brush_radius());
 
-    		Point p = {x, y};
     		clicked = true;
+    		Point p = {x, y};
 
     		item->points.push_back(p);
     		item->set_brush_radius(parent->get_brush_radius());
@@ -49,7 +50,44 @@ void PaintBrushTool::handle_input(SDL_Event *e)
     		{
 	    		Point p = {x, y};
     			parent->get_items()[parent->get_items().size() - 1].set_brush_radius(parent->get_brush_radius());
-    			parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
+    			
+    			// int x0 = item->points[item->points.size() - 1].x;
+	    		// int x1 = x;
+	    		// int y0 = item->points[item->points.size() - 1].y;
+	    		// int y1 = y;
+
+	    		// y = y0;
+	    		// int dx = x1 - x0;
+
+	    		// if (dx < 0)
+	    		// {
+	    		// 	int t = x0;
+	    		// 	x0 = x1;
+	    		// 	x1 = t;
+	    		// 	dx = x1 - x0;
+	    		// }
+
+	    		// int dy = y1 - y0;
+	    		// double error = 0.0;
+	    		// double derror = abs((double)dy / dx);
+
+	    		// // Bresenham's Line Algorithm
+	    		// for (int i = x0; i <= x1; i++)
+	    		// {
+	    		// 	Point p = {i, y};
+	    		// 	error += derror; 
+
+	    		// 	if (error >= 0.5)
+	    		// 	{
+	    		// 		y++;
+	    		// 		error -= 1.0;
+	    		// 	}
+
+	    		// 	parent->add_point_to_item(p);
+	    		// }
+
+    			parent->add_point_to_item(p);
+    			// parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
     	else if (e->type == SDL_MOUSEBUTTONUP && draw_bounds.collide_point(x, y))
@@ -60,7 +98,8 @@ void PaintBrushTool::handle_input(SDL_Event *e)
 
 	    		clicked = false;
 	    		parent->get_items()[parent->get_items().size() - 1].set_brush_radius(parent->get_brush_radius());
-	    		parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
+	    		parent->add_point_to_item(p);
+	    		// parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
 	}

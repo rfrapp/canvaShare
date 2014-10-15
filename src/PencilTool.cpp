@@ -30,7 +30,6 @@ void PencilTool::handle_input(SDL_Event *e)
     		clicked = true;
 
     		item->points.push_back(p);
-    		item->set_brush_radius(parent->get_brush_radius());
     		parent->add_canvas_item(*item);
     	}
     	else if (e->type == SDL_MOUSEMOTION && draw_bounds.collide_point(x, y))
@@ -38,7 +37,8 @@ void PencilTool::handle_input(SDL_Event *e)
     		if (clicked)
     		{
 	    		Point p = {x, y};
-    			parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
+    			parent->add_point_to_item(p);
+                // parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
     	else if (e->type == SDL_MOUSEBUTTONUP && draw_bounds.collide_point(x, y))
@@ -48,7 +48,8 @@ void PencilTool::handle_input(SDL_Event *e)
 	    		Point p = {x, y};
 
 	    		clicked = false;
-	    		parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
+	    		parent->add_point_to_item(p);
+                // parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
 	}

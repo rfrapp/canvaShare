@@ -38,7 +38,8 @@ void CircleTool::handle_input(SDL_Event *e)
     				parent->get_items()[parent->get_items().size() - 1].points.pop_back();
 
     			Point p = {x, y};
-    			parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
+    			parent->add_point_to_item(p);
+                // parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
     	else if (e->type == SDL_MOUSEBUTTONUP && draw_bounds.collide_point(x, y))
@@ -51,7 +52,8 @@ void CircleTool::handle_input(SDL_Event *e)
 	    		Point p = {x, y};
 
 	    		clicked = false;
-	    		parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
+	    		parent->add_point_to_item(p);
+                // parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
 	}

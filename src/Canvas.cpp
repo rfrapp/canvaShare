@@ -502,6 +502,20 @@ void Canvas::add_canvas_item(const CanvasItem & i)
 	}
 }
 
+void Canvas::resize_textbox(const int & _w, const int & _h)
+{
+	// send over network here
+
+	drawn_textboxes[drawn_textboxes.size() - 1].set_dimensions(_w, _h);
+}
+
+void Canvas::add_point_to_item(const Point & p)
+{
+	// send over network here
+
+	canvas_items[canvas_items.size() - 1].points.push_back(p);
+}
+
 /*
 void Canvas::send_canvas()
 {
@@ -528,6 +542,7 @@ void Canvas::undo_canvas_item()
 			current_page = item.get_page();
 	}
 }
+
 void Canvas::redo_canvas_item()
 {
 	// TODO: Send message to network
