@@ -573,7 +573,7 @@ void Canvas::redo_canvas_item()
 		{
 			TextBox t = undone_textboxes[undone_textboxes.size() - 1];
 			drawn_textboxes.push_back(t);
-			undone_items.pop_back();
+			undone_textboxes.pop_back();
 		}
 
 		if (item.get_page() != current_page)
