@@ -73,7 +73,6 @@ int getch()
 }
 
 
-
 Program::Program(int w, int h)
     : screen_width(w), screen_height(h), quit(false),
       window(NULL), renderer(NULL), canvas(renderer, w, h, this),
@@ -318,6 +317,125 @@ int Program::execute()
     // The main program loop
     while (!quit)
     {
+        bool wrotePrompt = false; // Whether or not we've already written the prompt
+        bool sendMessage = false; // Whether or not it's time to send the message (flips to true when the user presses return)
+
+        // While it's not time to shutdown the client...
+        while (shutdownClient == false)
+        {
+            // Write the prompt only once per line of input. This gets reset so that it's displayed again after a message is sent
+            if (wrotePrompt == false)
+            {
+                cout << "Write something:" << endl;
+                wrotePrompt = true;
+            }
+
+            // If we've detected that the user has pressed a key..
+            set_conio_terminal_mode();
+            int status = kbHit();
+            reset_terminal_mode();
+
+            //cout << "status is: " << status << endl;
+
+            if (status != 0)
+            {
+                //cout << "key was pressed and status is" << status << endl;
+
+                // Get the keypress
+                set_conio_terminal_mode();
+                char theChar = getch();
+                reset_terminal_mode();
+
+                // Output the character to stdout
+                cout << theChar;
+
+                // Flush the character to the screen
+                fflush(stdout);
+
+                // If the keypressed wasn't return then add the character to our message string
+                if ((int)theChar != 13)
+                {
+                    //cout << "Got the character: " << theChar << " (which is number: " << int(theChar) << ")" << endl;
+
+                    // Add the character to our input string
+                    userInput += theChar;
+                }
+                else // Otherwise (if the user pressed enter) then send the message
+                {
+                    //cout << "user pressed return" << endl;
+
+                    // Copy our user's string into our char array called "buffer"
+                    strcpy( buffer, userInput.c_str() );
+
+                    // Calculate the length of our input and then add 1 (for the terminating character) to get the total number of characters we need to send
+                    inputLength = strlen(buffer) + 1;
+
+                    // Send the message to the server
+                    if (SDLNet_TCP_Send(clientSocket, (void *)buffer, inputLength) < inputLength)
+                    {
+                        cout << "Failed to send message: " << /*SDLNet_GetError() <<*/ endl;
+                        exit(-1);
+                    }
+                    else
+                    {
+                        //cout << "Message sent successfully." << endl;
+
+                        // If we've asked the server to shutdown or we want out then set the flag appropriately
+                        if (sendMessage == true && (userInput == "quit" || userInput == "exit" || userInput == "shutdown"))
+                        {
+                            shutdownClient = true;
+                        }
+
+                        // Reset for the next message
+                        cout << endl;
+                        wrotePrompt = false;
+                        sendMessage = false;
+                        userInput = "";
+                    }
+
+                } // End of message sending section
+
+            } // End of if the user pressed a key test
+
+            // Check our socket set for activity. Don't wait if there's nothing on the socket just continue
+            int socketActive = SDLNet_CheckSockets(socketSet, 0);
+
+            //cout << "Sockets with data on them at the moment: " << activeSockets << endl;
+
+            if (socketActive != 0)
+            {
+                // Check if we got a response from the server
+                int messageFromServer = SDLNet_SocketReady(clientSocket);
+
+                if (messageFromServer != 0)
+                {
+                    //cout << "Got a response from the server... " << endl;
+                    int serverResponseByteCount = SDLNet_TCP_Recv(clientSocket, buffer, BUFFER_SIZE);
+
+                    cout << "Received: " << buffer << endl;// "(" << serverResponseByteCount << " bytes)" << endl;
+
+                    if (strcmp(buffer, "shutdown") == 0)
+                    {
+                        cout << "Server is going down. Disconnecting..." << endl;
+                        shutdownClient = true;
+                    }
+                }
+                else
+                {
+                    //cout << "No response from server..." << endl;
+                }
+
+            } // End of if socket has activity check
+
+        } // End of main while loop
+
+        // Close our socket, cleanup SDL_net, reset the terminal mode and finish!
+        SDLNet_TCP_Close(clientSocket);
+
+        SDLNet_Quit();
+
+        reset_terminal_mode();
+        
         while (!login_menu.is_logged_in())
         {
             while (SDL_PollEvent(&e))
@@ -385,124 +503,7 @@ int Program::execute()
         }
     }
 
-    bool wrotePrompt = false; // Whether or not we've already written the prompt
-    bool sendMessage = false; // Whether or not it's time to send the message (flips to true when the user presses return)
 
-    // While it's not time to shutdown the client...
-    while (shutdownClient == false)
-    {
-        // Write the prompt only once per line of input. This gets reset so that it's displayed again after a message is sent
-        if (wrotePrompt == false)
-        {
-            cout << "Write something:" << endl;
-            wrotePrompt = true;
-        }
-
-        // If we've detected that the user has pressed a key..
-        set_conio_terminal_mode();
-        int status = kbHit();
-        reset_terminal_mode();
-
-        //cout << "status is: " << status << endl;
-
-        if (status != 0)
-        {
-            //cout << "key was pressed and status is" << status << endl;
-
-            // Get the keypress
-            set_conio_terminal_mode();
-            char theChar = getch();
-            reset_terminal_mode();
-
-            // Output the character to stdout
-            cout << theChar;
-
-            // Flush the character to the screen
-            fflush(stdout);
-
-            // If the keypressed wasn't return then add the character to our message string
-            if ((int)theChar != 13)
-            {
-                //cout << "Got the character: " << theChar << " (which is number: " << int(theChar) << ")" << endl;
-
-                // Add the character to our input string
-                userInput += theChar;
-            }
-            else // Otherwise (if the user pressed enter) then send the message
-            {
-                //cout << "user pressed return" << endl;
-
-                // Copy our user's string into our char array called "buffer"
-                strcpy( buffer, userInput.c_str() );
-
-                // Calculate the length of our input and then add 1 (for the terminating character) to get the total number of characters we need to send
-                inputLength = strlen(buffer) + 1;
-
-                // Send the message to the server
-                if (SDLNet_TCP_Send(clientSocket, (void *)buffer, inputLength) < inputLength)
-                {
-                    cout << "Failed to send message: " << /*SDLNet_GetError() <<*/ endl;
-                    exit(-1);
-                }
-                else
-                {
-                    //cout << "Message sent successfully." << endl;
-
-                    // If we've asked the server to shutdown or we want out then set the flag appropriately
-                    if (sendMessage == true && (userInput == "quit" || userInput == "exit" || userInput == "shutdown"))
-                    {
-                        shutdownClient = true;
-                    }
-
-                    // Reset for the next message
-                    cout << endl;
-                    wrotePrompt = false;
-                    sendMessage = false;
-                    userInput = "";
-                }
-
-            } // End of message sending section
-
-        } // End of if the user pressed a key test
-
-        // Check our socket set for activity. Don't wait if there's nothing on the socket just continue
-        int socketActive = SDLNet_CheckSockets(socketSet, 0);
-
-        //cout << "Sockets with data on them at the moment: " << activeSockets << endl;
-
-        if (socketActive != 0)
-        {
-            // Check if we got a response from the server
-            int messageFromServer = SDLNet_SocketReady(clientSocket);
-
-            if (messageFromServer != 0)
-            {
-                //cout << "Got a response from the server... " << endl;
-                int serverResponseByteCount = SDLNet_TCP_Recv(clientSocket, buffer, BUFFER_SIZE);
-
-                cout << "Received: " << buffer << endl;// "(" << serverResponseByteCount << " bytes)" << endl;
-
-                if (strcmp(buffer, "shutdown") == 0)
-                {
-                    cout << "Server is going down. Disconnecting..." << endl;
-                    shutdownClient = true;
-                }
-            }
-            else
-            {
-                //cout << "No response from server..." << endl;
-            }
-
-        } // End of if socket has activity check
-
-    } // End of main while loop
-
-    // Close our socket, cleanup SDL_net, reset the terminal mode and finish!
-    SDLNet_TCP_Close(clientSocket);
-
-    SDLNet_Quit();
-
-    reset_terminal_mode();
 
     return 0;
 }
