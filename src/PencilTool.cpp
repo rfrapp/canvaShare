@@ -37,7 +37,7 @@ void PencilTool::handle_input(SDL_Event *e)
     		if (clicked)
     		{
 	    		Point p = {x, y};
-    			parent->add_point_to_item(p);
+    			parent->add_point_to_item(p, false);
                 // parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
@@ -48,7 +48,7 @@ void PencilTool::handle_input(SDL_Event *e)
 	    		Point p = {x, y};
 
 	    		clicked = false;
-	    		parent->add_point_to_item(p);
+	    		parent->add_point_to_item(p, false);
                 // parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}

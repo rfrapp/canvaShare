@@ -496,8 +496,8 @@ void Canvas::add_canvas_item(const CanvasItem & i)
 
 	undone_items.clear();
 	canvas_items.push_back(item);
-	//this->send_canvas();
-	//parent->send_message();
+	std::cout << item.to_string();
+	parent->send_message(item.to_string());
 
 	if (item.get_type() == "textbox")
 	{
@@ -516,11 +516,28 @@ void Canvas::resize_textbox(const int & _w, const int & _h)
 	drawn_textboxes[drawn_textboxes.size() - 1].set_dimensions(_w, _h);
 }
 
-void Canvas::add_point_to_item(const Point & p)
+void Canvas::add_point_to_item(const Point & p, bool pop)
 {
 	// send over network here
+	std::stringstream stream; 
+	stream << "modify";
 
+	if (pop)
+	{
+		stream << " pop"; 
+		if (canvas_items[canvas_items.size() - 1].points.size() == 2)
+			canvas_items[canvas_items.size() - 1].points.pop_back();
+	}
+
+	stream << "\n";
+	stream << p.x << '\n';
+	stream << p.y << '\n';
+	std::cout << "message: " << std::endl;
+	std::cout << stream.str();
+
+	parent->send_message(stream.str());
 	canvas_items[canvas_items.size() - 1].points.push_back(p);
+	// std::cout << "size of points: " << canvas_items[canvas_items.size() - 1].points.size() << std::endl;
 }
 
 /*
@@ -538,6 +555,7 @@ void Canvas::undo_canvas_item()
 	// TODO: Send message to network
 	// Somethong like "undo" to to let
 	// the other client know what happened 
+	parent->send_message("undo");
 
 	if (canvas_items.size() > 0)
 	{
@@ -562,6 +580,7 @@ void Canvas::redo_canvas_item()
 	// TODO: Send message to network
 	// Somethong like "redo" to to let
 	// the other client know what happened
+	parent->send_message("redo");
 
 	if (undone_items.size() > 0)
 	{

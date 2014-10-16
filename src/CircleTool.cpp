@@ -34,8 +34,8 @@ void CircleTool::handle_input(SDL_Event *e)
     	{
     		if (clicked)
     		{
-    			if (parent->get_items()[parent->get_items().size() - 1].points.size() == 2)
-    				parent->get_items()[parent->get_items().size() - 1].points.pop_back();
+    			// if (parent->get_items()[parent->get_items().size() - 1].points.size() == 2)
+    			// 	parent->get_items()[parent->get_items().size() - 1].points.pop_back();
 
     			Point p = {x, y};
     			parent->add_point_to_item(p);
@@ -46,8 +46,8 @@ void CircleTool::handle_input(SDL_Event *e)
     	{
     		if (clicked)
     		{
-    			if (parent->get_items()[parent->get_items().size() - 1].points.size() == 2)
-    				parent->get_items()[parent->get_items().size() - 1].points.pop_back();
+    			// if (parent->get_items()[parent->get_items().size() - 1].points.size() == 2)
+    			// 	parent->get_items()[parent->get_items().size() - 1].points.pop_back();
 
 	    		Point p = {x, y};
 

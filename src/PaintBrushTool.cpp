@@ -86,7 +86,7 @@ void PaintBrushTool::handle_input(SDL_Event *e)
 	    		// 	parent->add_point_to_item(p);
 	    		// }
 
-    			parent->add_point_to_item(p);
+    			parent->add_point_to_item(p, false);
     			// parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}
@@ -98,7 +98,7 @@ void PaintBrushTool::handle_input(SDL_Event *e)
 
 	    		clicked = false;
 	    		parent->get_items()[parent->get_items().size() - 1].set_brush_radius(parent->get_brush_radius());
-	    		parent->add_point_to_item(p);
+	    		parent->add_point_to_item(p, false);
 	    		// parent->get_items()[parent->get_items().size() - 1].points.push_back(p);
     		}
     	}

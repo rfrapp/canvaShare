@@ -179,14 +179,14 @@ public:
 		stream << brush_radius << '\n'
 		       << type << '\n'
 		       << page << '\n'
-		       << foreground_r << '\n'
-		       << foreground_g << '\n'
-		       << foreground_b << '\n'
-		       << foreground_a << '\n'
-		       << background_r << '\n'
-		       << background_g << '\n'
-		       << background_b << '\n'
-		       << background_a << '\n';
+		       << (int)foreground_r << '\n'
+		       << (int)foreground_g << '\n'
+		       << (int)foreground_b << '\n'
+		       << (int)foreground_a << '\n'
+		       << (int)background_r << '\n'
+		       << (int)background_g << '\n'
+		       << (int)background_b << '\n'
+		       << (int)background_a << '\n';
 
 		for (int i = 0; i < points.size(); i++)
 		{

@@ -202,7 +202,7 @@ bool Program::load_media()
 void Program::send_message(std::string str)
 {
     // Send the message to the server
-    if (SDLNet_TCP_Send(clientSocket, (void*)str.c_str(), str.length()) < str.length())
+    if (SDLNet_TCP_Send(clientSocket, (void*)str.c_str(), BUFFER_SIZE) < BUFFER_SIZE)
     {
         cout << "Failed to send message: " << /*SDLNet_GetError() <<*/ endl;
         exit(-1);
