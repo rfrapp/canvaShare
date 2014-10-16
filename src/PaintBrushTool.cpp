@@ -36,7 +36,8 @@ void PaintBrushTool::handle_input(SDL_Event *e)
 			                  parent->get_background_r(), parent->get_background_g(),
 			                  parent->get_background_b(), parent->get_background_a(), 
 			                  parent->get_brush_radius());
-
+    		
+    		item->set_brush_radius(parent->get_brush_radius());
     		clicked = true;
     		Point p = {x, y};
 

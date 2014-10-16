@@ -45,7 +45,7 @@ void TextBoxTool::handle_input(SDL_Event *e)
                 w = i.points[1].x - i.points[0].x;
                 h = i.points[1].y - i.points[0].y;
 
-                parent->resize_textbox(w, h);
+                // parent->resize_textbox(w, h, true);
                 //parent->get_textboxes()[parent->get_textboxes().size() - 1].set_dimensions(w, h);
     		}
     	}
@@ -53,8 +53,8 @@ void TextBoxTool::handle_input(SDL_Event *e)
     	{
     		if (clicked)
     		{
-    			if (parent->get_items()[parent->get_items().size() - 1].points.size() == 2)
-    				parent->get_items()[parent->get_items().size() - 1].points.pop_back();
+    			// if (parent->get_items()[parent->get_items().size() - 1].points.size() == 2)
+    			// 	parent->get_items()[parent->get_items().size() - 1].points.pop_back();
 
 	    		Point p = {x, y};
 

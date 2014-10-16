@@ -227,7 +227,8 @@ int Program::execute()
 
     // Ask the user for a server to connect to - can be entered as a hostname (i.e. localhost etc.) or an IP address (i.e. 127.0.0.1 etc.)
     cout << "Server Name: ";
-    //getline(cin, serverName); // Uncomment this and remove the below line to change the server we're connecting to...
+    // getline(cin, serverName); // Uncomment this and remove the below line to change the server we're connecting to...
+    // serverName = "162.243.85.215";
     serverName = "localhost";
 
     // Create the socket set with enough space to store our desired number of connections (i.e. sockets)
@@ -378,7 +379,10 @@ int Program::execute()
                     //cout << "Got a response from the server... " << endl;
                     int serverResponseByteCount = SDLNet_TCP_Recv(clientSocket, buffer, BUFFER_SIZE);
 
-                    cout << "Received: " << buffer << endl;// "(" << serverResponseByteCount << " bytes)" << endl;
+                    // cout << "Received: " << buffer << endl;// "(" << serverResponseByteCount << " bytes)" << endl;
+
+                    std::string str = buffer;
+                    canvas.receive_message(str);
 
                     if (strcmp(buffer, "shutdown") == 0)
                     {

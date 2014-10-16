@@ -31,9 +31,9 @@ public:
 	std::vector< Point > points; 
 	CanvasItem(std::string t, Uint8 fg_r, Uint8 fg_g, Uint8 fg_b, Uint8 fg_a, 
 		       Uint8 bg_r, Uint8 bg_g, Uint8 bg_b, Uint8 bg_a, 
-		       int brush_radius=1, int pg=0) : type(t), foreground_r(fg_r), foreground_g(fg_g),
+		       int radius=1, int pg=0) : type(t), foreground_r(fg_r), foreground_g(fg_g),
 			   foreground_b(fg_b), foreground_a(fg_a), background_r(bg_r), background_g(bg_g),
-			   background_b(bg_b), background_a(bg_a), page(pg)
+			   background_b(bg_b), background_a(bg_a), page(pg), brush_radius(radius)
 	{ 
 	}
 	
@@ -124,7 +124,7 @@ public:
 		std::string type = "";
 		std::vector < Point > points;
 		Point tmp;
-		
+
 		std::stringstream stream;
 		std::string line;
 		stream << str;
@@ -146,7 +146,7 @@ public:
 			else if (l == 6)
 				fa = atoi(line.c_str());
 			else if (l == 7)
-				br = atoi(line.c_str());
+				bgr = atoi(line.c_str());
 			else if (l == 8)
 				bg = atoi(line.c_str());
 			else if (l == 9)

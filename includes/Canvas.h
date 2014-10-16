@@ -86,6 +86,7 @@ private:
 	std::vector< TextBox > drawn_textboxes;
 	std::vector< TextBox > undone_textboxes;
 
+	int selected_textbox;
 	int current_page;
 	std::vector< Texture > pages;
 
@@ -119,7 +120,7 @@ public:
 	        bg_r(0), bg_g(0), bg_b(0), bg_a(255), quit(false),
 	        current_page(0), background_selected(true), page_surface(NULL),
 	        selected_item(-1), clicked_pos(NULL), last_move_pos(NULL), 
-	        id(-1), parent(p)
+	        id(-1), parent(p), selected_textbox(-1)
 	{
 	}
 
@@ -174,20 +175,17 @@ public:
 
 	void add_page();
 
-	void add_canvas_item(const CanvasItem & i);
-	void add_point_to_item(const Point & p, bool pop=true);
-	void resize_textbox(const int & _w, const int & _h);
+	void receive_message(const std::string & str);
+	void add_canvas_item(const CanvasItem & i, bool send=true);
+	void add_point_to_item(const Point & p, bool pop=true, bool send=true);
+	void resize_textbox(const int & _w, const int & _h, bool send=true);
+	void add_char_to_textbox(char c, bool send=true);
 
-	void undo_canvas_item();
-	void redo_canvas_item();
-	void page_left();
-	void page_right();
+	void undo_canvas_item(bool send=true);
+	void redo_canvas_item(bool send=true);
+	void page_left(bool send=true);
+	void page_right(bool send=true);
 	int get_page() const { return current_page; }
-
-    void send_canvas_item(const CanvasItem & item)
-    {
-        std::cout << item.to_string();
-    }
 
 	// Loads fonts, images, etc.
 	bool load_media();

@@ -6,6 +6,8 @@
 #include "Program.h"
 #include <string>
 #include <sstream>
+#include <cstring>
+#include <cstdlib>
 
 void Canvas::draw()
 {
@@ -488,16 +490,64 @@ std::string Canvas::canvas_items_to_string()
 	return str;
 }
 
+void Canvas::receive_message(const std::string & str)
+{
+	std::stringstream stream;
+	std::string line;
+	std::vector< std::string > lines; 
 
-void Canvas::add_canvas_item(const CanvasItem & i) 
+	stream << str;
+
+	while (getline(stream, line))
+	{
+		lines.push_back(line);
+		// std::cout << "line: " << line << std::endl;
+	}
+
+	if (lines[0] == "modify pop")
+	{
+		Point p = {std::atoi(lines[1].c_str()), std::atoi(lines[2].c_str())};
+		add_point_to_item(p, true, false);
+	}
+	else if (lines[0] == "modify")
+	{
+		Point p = {std::atoi(lines[1].c_str()), std::atoi(lines[2].c_str())};
+		add_point_to_item(p, false, false);
+	}
+	else if (lines[0] == "add")
+	{
+		std::cout << "\n\nI AM IN ADD COMMAND\n\n" << std::endl;
+		// collapse the lines to 1 string
+		std::string newstr = "";
+
+		for (int i = 1; i < lines.size(); i++)
+			newstr += lines[i] + '\n';
+
+		CanvasItem c = CanvasItem::string_to_item(newstr);
+		std::cout << "New canvas item: " << std::endl;
+		std::cout << c.to_string();
+		add_canvas_item(c, false);
+	}
+	else if (lines[0] == "undo")
+		undo_canvas_item(false);
+	else if (lines[0] == "redo")
+		redo_canvas_item(false);
+	else if (lines[0] == "page right")
+		page_right(false);
+	else if (lines[0] == "page left")
+		page_left(false);
+}
+
+void Canvas::add_canvas_item(const CanvasItem & i, bool send) 
 { 
 	CanvasItem item = i;
 	item.set_page(current_page);
 
 	undone_items.clear();
 	canvas_items.push_back(item);
-	std::cout << item.to_string();
-	parent->send_message(item.to_string());
+
+	if (send)
+		parent->send_message("add\n" + item.to_string());
 
 	if (item.get_type() == "textbox")
 	{
@@ -506,17 +556,21 @@ void Canvas::add_canvas_item(const CanvasItem & i)
 			      fg_r, fg_g, fg_b);
 		t.set_page(current_page);
 		drawn_textboxes.push_back(t);
+
+		for (int i = drawn_textboxes.size() - 2; i >= 0; i--)
+		{
+			if (drawn_textboxes[i].has_focus())
+				drawn_textboxes[i].set_focus(false);
+		}
 	}
 }
 
-void Canvas::resize_textbox(const int & _w, const int & _h)
+void Canvas::resize_textbox(const int & _w, const int & _h, bool send)
 {
-	// send over network here
-
 	drawn_textboxes[drawn_textboxes.size() - 1].set_dimensions(_w, _h);
 }
 
-void Canvas::add_point_to_item(const Point & p, bool pop)
+void Canvas::add_point_to_item(const Point & p, bool pop, bool send)
 {
 	// send over network here
 	std::stringstream stream; 
@@ -529,15 +583,36 @@ void Canvas::add_point_to_item(const Point & p, bool pop)
 			canvas_items[canvas_items.size() - 1].points.pop_back();
 	}
 
-	stream << "\n";
-	stream << p.x << '\n';
-	stream << p.y << '\n';
-	std::cout << "message: " << std::endl;
-	std::cout << stream.str();
-
-	parent->send_message(stream.str());
+	if (send)
+	{
+		stream << "\n";
+		stream << p.x << '\n';
+		stream << p.y << '\n';
+		// std::cout << "message: " << std::endl;
+		// std::cout << stream.str();
+		parent->send_message(stream.str());
+	}
 	canvas_items[canvas_items.size() - 1].points.push_back(p);
+	CanvasItem item = canvas_items[canvas_items.size() - 1];
+
+	if (item.get_type() == "textbox")
+	{
+		int _w = item.points[1].x - item.points[0].x;
+		int _h = item.points[1].y - item.points[0].y;
+		resize_textbox(_w, _h, false);
+	}
+
 	// std::cout << "size of points: " << canvas_items[canvas_items.size() - 1].points.size() << std::endl;
+}
+
+void Canvas::add_char_to_textbox(char c, bool send)
+{
+	if (send)
+	{
+		// std::stringstream stream;
+		// stream << "char"
+		//        << 
+	}
 }
 
 /*
@@ -550,12 +625,13 @@ void Canvas::send_canvas()
 }
 */
 
-void Canvas::undo_canvas_item() 
+void Canvas::undo_canvas_item(bool send) 
 { 
 	// TODO: Send message to network
 	// Somethong like "undo" to to let
 	// the other client know what happened 
-	parent->send_message("undo");
+	if (send)
+		parent->send_message("undo");
 
 	if (canvas_items.size() > 0)
 	{
@@ -575,12 +651,13 @@ void Canvas::undo_canvas_item()
 	}
 }
 
-void Canvas::redo_canvas_item()
+void Canvas::redo_canvas_item(bool send)
 {
 	// TODO: Send message to network
 	// Somethong like "redo" to to let
 	// the other client know what happened
-	parent->send_message("redo");
+	if (send)
+		parent->send_message("redo");
 
 	if (undone_items.size() > 0)
 	{
@@ -600,10 +677,13 @@ void Canvas::redo_canvas_item()
 	}
 }
 
-void Canvas::page_left()
+void Canvas::page_left(bool send)
 {
 	if (current_page > 0)
 	{
+		if (send)
+			parent->send_message("page left");
+		
 		current_page--;
 		
 		page_surface = new TextSurface(font, 0, 0, 0, 0, false);
@@ -613,12 +693,13 @@ void Canvas::page_left()
 	}
 }
 
-void Canvas::page_right()
+void Canvas::page_right(bool send)
 {
+	if (send)
+		parent->send_message("page right");
+
 	if (pages.size() - 1 == current_page)
 	{
-		// TODO: send new page over network
-
 		add_page();
 	}
 	else 
