@@ -68,10 +68,7 @@ public:
 	void cleanup();
 
 	// Network sends
-	void send_message()
-	{
-		//net->send_canvas_item(canvas);
-	}
+	void send_message(std::string str);
 };
 
 #endif 

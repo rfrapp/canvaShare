@@ -497,7 +497,7 @@ void Canvas::add_canvas_item(const CanvasItem & i)
 	undone_items.clear();
 	canvas_items.push_back(item);
 	//this->send_canvas();
-	parent->send_message();
+	//parent->send_message();
 
 	if (item.get_type() == "textbox")
 	{
