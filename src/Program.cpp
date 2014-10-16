@@ -391,7 +391,7 @@ int Program::execute()
                 }
 
             } // End of if socket has activity check
-            
+
         	// Check for events
             while (SDL_PollEvent(&e))
             {
