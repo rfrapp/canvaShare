@@ -428,13 +428,6 @@ int Program::execute()
             } // End of if socket has activity check
 
         } // End of main while loop
-
-        // Close our socket, cleanup SDL_net, reset the terminal mode and finish!
-        SDLNet_TCP_Close(clientSocket);
-
-        SDLNet_Quit();
-
-        reset_terminal_mode();
         
         while (!login_menu.is_logged_in())
         {
@@ -503,7 +496,12 @@ int Program::execute()
         }
     }
 
+    // Close our socket, cleanup SDL_net, reset the terminal mode and finish!
+    SDLNet_TCP_Close(clientSocket);
 
+    SDLNet_Quit();
+
+    reset_terminal_mode();
 
     return 0;
 }
