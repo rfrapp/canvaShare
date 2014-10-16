@@ -9,6 +9,13 @@
 
 #include "Canvas.h"
 #include "LoginMenu.h"
+#include "string.h"
+#include <string>
+
+
+const unsigned short PORT        = 1234; // The port we are connecting to
+const unsigned short BUFFER_SIZE = 512;  // Size of our message buffer (i.e. maximum length of characters in a message)
+
 
 
 class Program
@@ -23,9 +30,20 @@ private:
 
     LoginMenu login_menu;
     Canvas canvas;
-
+    /*
     bool is_online;
     Network* net;
+	*/
+    const char *host;         // Where we store the host name
+
+    IPaddress serverIP;       // The IP we will connect to
+    TCPsocket clientSocket;   // The socket to use
+    std::string serverName;     // The server name
+
+    std::string userInput = "";    // A string to hold our user input
+    int inputLength  = 0;     // The length of our string in characters
+    char buffer[BUFFER_SIZE]; // Array of character's we'll use to transmit our message. We get input into the userInput string for ease of use, then just copy it to this character array and send it.
+
     
 public:
 	Program(int w, int h);
