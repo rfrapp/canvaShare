@@ -20,6 +20,7 @@ private:
 	bool outline;
 	bool multiline;
 	bool is_password_box;
+	bool send;
 	int page;
 
 	Uint8 outline_r, outline_g, outline_b;
@@ -36,12 +37,42 @@ public:
 	void handle_input(SDL_Event *e);
 
 	int get_page() const { return page; }
+	int get_current_line() const { return current_line; }
+	int get_cursor_pos() const { return cursor_pos; }
 
 	void set_text(SDL_Renderer *renderer, std::string t) { surface.set_text(renderer, t); }
 	void set_password_box(bool b) { is_password_box = b; surface.set_password_box(b); }
 	void set_page(int p) { page = p; }
-
+	void set_send(bool s) { send = s; }
 	void set_parent(Canvas * p) { parent = p; }
+
+	void move_cursor_left();
+	void move_cursor_right();
+	void move_cursor_up();
+	void move_cursor_down();
+	void delete_char();
+	void delete_char(int l, int p)
+	{
+		current_line = l;
+		cursor_pos = p;
+		delete_char();
+	}
+
+	void insert_char(char c);
+	void insert_char(int l, int p, char c)
+	{
+		current_line = l;
+		cursor_pos = p;
+		insert_char(c);
+	}
+
+	void to_next_line();
+	void to_next_line(int l, int p)
+	{
+		current_line = l;
+		cursor_pos = p;
+		to_next_line();
+	}
 
 	void set_dimensions(int _w, int _h)
 	{

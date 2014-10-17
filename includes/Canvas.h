@@ -179,7 +179,7 @@ public:
 	void add_canvas_item(const CanvasItem & i, bool send=true);
 	void add_point_to_item(const Point & p, bool pop=true, bool send=true);
 	void resize_textbox(const int & _w, const int & _h, bool send=true);
-	void add_char_to_textbox(char c, bool send=true);
+	void modify_textbox(std::string str, bool send=true);
 
 	void undo_canvas_item(bool send=true);
 	void redo_canvas_item(bool send=true);

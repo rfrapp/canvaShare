@@ -536,6 +536,12 @@ void Canvas::receive_message(const std::string & str)
 		page_right(false);
 	else if (lines[0] == "page left")
 		page_left(false);
+	else if (lines[0] == "insert")
+		modify_textbox(str, false);
+	else if (lines[0] == "delete")
+		modify_textbox(str, false);
+	else if (lines[0] == "enter")
+		modify_textbox(str, false);
 }
 
 void Canvas::add_canvas_item(const CanvasItem & i, bool send) 
@@ -555,6 +561,8 @@ void Canvas::add_canvas_item(const CanvasItem & i, bool send)
 			      item.points[0].y, true, true, 255, 255, 255,
 			      fg_r, fg_g, fg_b);
 		t.set_page(current_page);
+		t.set_parent(this);
+		t.set_send(true);
 		drawn_textboxes.push_back(t);
 
 		for (int i = drawn_textboxes.size() - 2; i >= 0; i--)
@@ -605,13 +613,87 @@ void Canvas::add_point_to_item(const Point & p, bool pop, bool send)
 	// std::cout << "size of points: " << canvas_items[canvas_items.size() - 1].points.size() << std::endl;
 }
 
-void Canvas::add_char_to_textbox(char c, bool send)
+void Canvas::modify_textbox(std::string str, bool send)
 {
+	std::stringstream stream;
+	std::string line;
+	std::vector< std::string > lines; 
+	int modified_index = 0;
+
+	stream << str;
+
+	while (getline(stream, line))
+	{
+		lines.push_back(line);
+		// std::cout << "line: " << line << std::endl;
+	}
+
+	for (int i = drawn_textboxes.size() - 1; i >= 0; i--)
+	{
+		if (drawn_textboxes[i].has_focus())
+		{
+			modified_index = i;
+			break;
+		}
+	}
+
 	if (send)
 	{
-		// std::stringstream stream;
-		// stream << "char"
-		//        << 
+		std::stringstream stream2;
+		if (lines[0] == "insert")
+		{
+			stream2 << "insert"       << '\n'
+				   << modified_index << '\n'
+		           << lines[1]       << '\n'
+		           << lines[2]       << '\n'
+		           << lines[3]       << '\n';
+		}
+		else if (lines[0] == "delete")
+		{
+			stream2 << "delete"       << '\n'
+				    << modified_index << '\n'
+		            << lines[1]       << '\n'
+		            << lines[2]       << '\n';
+		}
+		else if (lines[0] == "enter")
+		{
+			stream2 << "enter"        << '\n';
+			stream2 << modified_index << '\n';
+			stream2 << lines[1]       << '\n';
+			stream2 << lines[2]       << '\n';
+		}
+
+		parent->send_message(stream2.str());
+	}
+	else
+	{
+		if (lines[0] == "insert")
+		{
+			int i = std::atoi(lines[1].c_str());
+			int l = std::atoi(lines[2].c_str());
+			int p = std::atoi(lines[3].c_str());
+			char c = lines[4][0];
+
+			drawn_textboxes[i].insert_char(l, p, c);
+		}
+		else if (lines[0] == "delete")
+		{
+			int i = std::atoi(lines[1].c_str());
+			int l = std::atoi(lines[2].c_str());
+			int p = std::atoi(lines[3].c_str());
+
+			std::cout << "I AM DELETING STUFF" << std::endl;
+
+			drawn_textboxes[i].delete_char(l, p);
+		}
+		else if (lines[0] == "enter")
+		{
+			int i = std::atoi(lines[1].c_str());
+			int l = std::atoi(lines[2].c_str());
+			int p = std::atoi(lines[3].c_str());
+
+			drawn_textboxes[i].to_next_line(l, p);
+		}
 	}
 }
 
