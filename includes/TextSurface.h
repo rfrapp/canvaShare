@@ -250,7 +250,7 @@ public:
 			{
 				if (lines[current_line - 1].length() 
 					+ lines[current_line].length()
-					< max_chars_per_line)
+					< max_chars_per_line && lines[current_line].length() > 0)
 				{
 					//std::cout << "blah" << std::endl;
 					lines[current_line - 1] += lines[current_line];
@@ -269,6 +269,7 @@ public:
 				}
 				else if (index == -1)
 				{
+					
 					lines.pop_back();
 
 					if (visible_line_start > 0)
