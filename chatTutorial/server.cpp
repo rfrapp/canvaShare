@@ -92,6 +92,7 @@ int main(int argc, char **argv)
     IPaddress serverIP;                  // The IP of the server (this will end up being 0.0.0.0 - which means roughly "any IP address")
     TCPsocket serverSocket;              // The server socket that clients will use to connect to us
     TCPsocket clientSocket[MAX_CLIENTS]; // An array of sockets for the clients, we don't include the server socket (it's specified separately in the line above)
+    std::string clientUsername[MAX_CLIENTS] = {""};
     bool      socketIsFree[MAX_CLIENTS]; // An array of flags to keep track of which client sockets are free (so we know whether we can use the socket for a new client connection or not)
  
     char buffer[BUFFER_SIZE];            // Array of characters used to store the messages we receive
@@ -253,7 +254,8 @@ int main(int argc, char **argv)
                 {
                     //...so output a suitable message and then...
                     cout << "Client " << clientNumber << " disconnected." << endl << endl;
- 
+                    clientUsername[clientNumber] = "";
+
                     //... remove the socket from the socket set, then close and reset the socket ready for re-use and finally...
                     SDLNet_TCP_DelSocket(socketSet, clientSocket[clientNumber]);
                     SDLNet_TCP_Close(clientSocket[clientNumber]);
@@ -278,8 +280,20 @@ int main(int argc, char **argv)
 
                     if (v[0] == "login")
                     {
+                        for (int i = 0; i < MAX_CLIENTS; i++)
+                        {
+                            if (clientUsername[i] == v[1])
+                            {
+                                SDLNet_TCP_Send(clientSocket[clientNumber], "already logged in", 18);
+                                break;
+                            }
+                        }
+
                         if (check_login(v[1], v[2]))
+                        {
+                            clientUsername[clientNumber] = v[1];
                             SDLNet_TCP_Send(clientSocket[clientNumber], "logged in", 10);
+                        }
                         else
                             SDLNet_TCP_Send(clientSocket[clientNumber], "not logged in", 14);
                     }

@@ -167,6 +167,12 @@ void LoginMenu::receive_message(std::string message)
 		message_surface->set_text(renderer, "Invalid Credentials");
 		login_button->set_focus(false);
 	}
+	else if (message == "already logged in")
+	{
+		show_message = true;
+		message_surface->set_text(renderer, "This user is already logged in");
+		login_button->set_focus(false);
+	}
 	else if (message == "already registered")
 	{
 		show_message = true;
@@ -175,16 +181,23 @@ void LoginMenu::receive_message(std::string message)
 	}
 	else if (message == "registered")
 	{
+		SDL_Rect rect = {w / 2 - 345 / 2, h / 2 - 60, 345, 205};
+		
 		show_message = true;
 		message_surface->set_text(renderer, "You have been registered!");
 		register_button->set_focus(false);
+
+		delete username_box;
+		delete password_box;
+
+		username_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 10, true, false);
+		password_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 80, true, false);
+		password_box->set_password_box(true);
 	}
 }
 
 void LoginMenu::register_user()
 {
-	SDL_Rect rect = {w / 2 - 345 / 2, h / 2 - 60, 345, 205};
-
 	if (username_box->text() != "" && password_box->text() != "")
 	{
 		// File f("user.txt");
