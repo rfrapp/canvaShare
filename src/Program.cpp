@@ -76,7 +76,7 @@ int getch()
 Program::Program(int w, int h)
     : screen_width(w), screen_height(h), quit(false),
       window(NULL), renderer(NULL), canvas(renderer, w, h, this),
-      login_menu(renderer, w, h)//, is_online(true)
+      login_menu(this, renderer, w, h)//, is_online(true)
 {
     /*
     screen_width = w;
@@ -330,6 +330,38 @@ int Program::execute()
     {   
         while (!login_menu.is_logged_in())
         {
+            // Check our socket set for activity. Don't wait if there's nothing on the socket just continue
+            int socketActive = SDLNet_CheckSockets(socketSet, 0);
+
+            //cout << "Sockets with data on them at the moment: " << activeSockets << endl;
+
+            if (socketActive != 0)
+            {
+                // Check if we got a response from the server
+                int messageFromServer = SDLNet_SocketReady(clientSocket);
+
+                if (messageFromServer != 0)
+                {
+                    //cout << "Got a response from the server... " << endl;
+                    int serverResponseByteCount = SDLNet_TCP_Recv(clientSocket, buffer, BUFFER_SIZE);
+
+                    // cout << "Received: " << buffer << endl;// "(" << serverResponseByteCount << " bytes)" << endl;
+
+                    std::string str = buffer;
+                    login_menu.receive_message(str);
+
+                    if (strcmp(buffer, "shutdown") == 0)
+                    {
+                        cout << "Server is going down. Disconnecting..." << endl;
+                    }
+                }
+                else
+                {
+                    //cout << "No response from server..." << endl;
+                }
+
+            } // End of if socket has activity check
+
             while (SDL_PollEvent(&e))
             {
                 if (e.type == SDL_QUIT)

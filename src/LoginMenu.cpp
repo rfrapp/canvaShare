@@ -1,6 +1,13 @@
 
 #include "LoginMenu.h"
 #include "File.h"
+#include "Program.h"
+
+LoginMenu::LoginMenu(Program *p, SDL_Renderer * r, int _w, int _h) 
+	    : logged_in(false), w(_w), h(_h), renderer(r),
+	      show_message(true), parent(p)
+{
+}
 
 void LoginMenu::draw()
 {
@@ -118,31 +125,59 @@ void LoginMenu::get_notification(std::string event, int id)
 
 void LoginMenu::authenticate()
 {
-	File f("user.txt");
-	std::vector< std::vector< std::string > > users;
-	bool found = false;
+	// File f("user.txt");
+	// std::vector< std::vector< std::string > > users;
+	// bool found = false;
 
-	users = f.get_lines_delimited();
+	// users = f.get_lines_delimited();
 
-	std::cout << users.size() << std::endl;
+	// std::cout << users.size() << std::endl;
 
-	for (int i = 0; i < users.size(); i++)
-	{
-		if (users[i].size() > 1)
-		{
-			if (users[i][0] == username_box->text()
-				&& users[i][1] == password_box->text())
-				found = true;
-		}
-	}
+	// for (int i = 0; i < users.size(); i++)
+	// {
+	// 	if (users[i].size() > 1)
+	// 	{
+	// 		if (users[i][0] == username_box->text()
+	// 			&& users[i][1] == password_box->text())
+	// 			found = true;
+	// 	}
+	// }
 
-	logged_in = found; 
-	login_button->set_focus(false);
+	// logged_in = found; 
+	// login_button->set_focus(false);
 
-	if (!logged_in)
+	// if (!logged_in)
+	// {
+	// 	show_message = true;
+	// 	message_surface->set_text(renderer, "Invalid Credentials");
+	// }
+
+	std::string str = "login\n" + username_box->text() + "\n" + password_box->text() + "\n";
+
+	parent->send_message(str);
+}
+
+void LoginMenu::receive_message(std::string message)
+{
+	if (message == "logged in")
+		logged_in = true;
+	else if (message == "not logged in")
 	{
 		show_message = true;
 		message_surface->set_text(renderer, "Invalid Credentials");
+		login_button->set_focus(false);
+	}
+	else if (message == "already registered")
+	{
+		show_message = true;
+		message_surface->set_text(renderer, "You are already registered");
+		register_button->set_focus(false);
+	}
+	else if (message == "registered")
+	{
+		show_message = true;
+		message_surface->set_text(renderer, "You have been registered!");
+		register_button->set_focus(false);
 	}
 }
 
@@ -152,45 +187,48 @@ void LoginMenu::register_user()
 
 	if (username_box->text() != "" && password_box->text() != "")
 	{
-		File f("user.txt");
-		std::vector< std::vector< std::string > > users;
-		bool found = false;
+		// File f("user.txt");
+		// std::vector< std::vector< std::string > > users;
+		// bool found = false;
 
-		users = f.get_lines_delimited();
+		// users = f.get_lines_delimited();
 
-		for (int i = 0; i < users.size(); i++)
-		{
-			if (users[i][0] == username_box->text())
-				found = true;
-		}
+		// for (int i = 0; i < users.size(); i++)
+		// {
+		// 	if (users[i][0] == username_box->text())
+		// 		found = true;
+		// }
 
-		if (!found)
-		{
-			std::vector< std::string > v; 
-			v.push_back(username_box->text());
-			v.push_back(password_box->text());
+		// if (!found)
+		// {
+		// 	std::vector< std::string > v; 
+		// 	v.push_back(username_box->text());
+		// 	v.push_back(password_box->text());
 
-			users.push_back(v);
+		// 	users.push_back(v);
 
-			f.write_delimited_to_file(users);
+		// 	f.write_delimited_to_file(users);
 
-			register_button->set_focus(false);
-			show_message = true;
-			message_surface->set_text(renderer, "You have been registered!");
+		// 	register_button->set_focus(false);
+		// 	show_message = true;
+		// 	message_surface->set_text(renderer, "You have been registered!");
 
-			delete username_box;
-			delete password_box;
+		// 	delete username_box;
+		// 	delete password_box;
 
-			username_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 10, true, false);
-			password_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 80, true, false);
-			password_box->set_password_box(true);
-		}
-		else
-		{
-			show_message = true;
-			message_surface->set_text(renderer, "This username is already registered!");
-			register_button->set_focus(false);	
-		}
+		// 	username_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 10, true, false);
+		// 	password_box = new TextBox(renderer, font, 200, 10, rect.x + 10 + username_label->get_width(), rect.y + 80, true, false);
+		// 	password_box->set_password_box(true);
+		// }
+		// else
+		// {
+		// 	show_message = true;
+		// 	message_surface->set_text(renderer, "This username is already registered!");
+		// 	register_button->set_focus(false);	
+		// }
+
+		std::string str = "register\n" + username_box->text() + "\n" + password_box->text() + "\n";
+		parent->send_message(str);
 
 		// username_box->set_text(renderer, "");
 		// password_box->set_text(renderer, "");

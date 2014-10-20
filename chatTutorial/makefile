@@ -1,7 +1,7 @@
 exe: 
 	g++ server.cpp `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf -lSDL2_gfx -lSDL_net -Iincludes -I/usr/local/include -L/usr/local/lib -w
 mac:
-	g++ *.cpp src/*.cpp `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf -lSDL2_gfx -lSDL2_net -Iincludes -I/usr/local/include -L/usr/local/lib -w
+	g++ server.cpp `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf -lSDL2_gfx -lSDL2_net -Iincludes -I/usr/local/include -L/usr/local/lib -w
 r:
 	./a.out
 clean:

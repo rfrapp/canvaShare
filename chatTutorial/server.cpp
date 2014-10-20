@@ -5,6 +5,9 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
+#include <vector>
+#include <string>
+#include "File.h"
 
 using namespace std;
 
@@ -16,6 +19,73 @@ const unsigned short MAX_CLIENTS = MAX_SOCKETS - 1; // Max number of clients in 
 // Messages to send back to any connecting client to let them know if we can accept the connection or not
 const string SERVER_NOT_FULL = "OK";
 const string SERVER_FULL     = "FULL";
+
+std::vector< std::string > read_message(std::string msg)
+{
+    std::stringstream stream;
+    std::string line;
+    std::vector< std::string > lines; 
+
+    stream << msg;
+
+    while (getline(stream, line))
+    {
+        lines.push_back(line);
+    }
+
+    return lines;
+}
+
+bool check_login(std::string u, std::string p)
+{
+    File f("users.txt");
+
+    std::vector< std::vector< std::string > > users;
+    bool found = false;
+
+    users = f.get_lines_delimited();
+
+    std::cout << users.size() << std::endl;
+
+    for (int i = 0; i < users.size(); i++)
+    {
+        if (users[i].size() > 1)
+        {
+            if (users[i][0] == u && users[i][1] == p)
+                found = true;
+        }
+    }
+
+    return found;
+}
+
+bool register_user(std::string u, std::string p)
+{
+    File f("users.txt");
+    std::vector< std::vector< std::string > > users;
+    bool found = false;
+
+    users = f.get_lines_delimited();
+
+    for (int i = 0; i < users.size(); i++)
+    {
+        if (users[i][0] == u)
+            found = true;
+    }
+
+    if (!found)
+    {
+        std::vector< std::string > v; 
+         v.push_back(u);
+         v.push_back(p);
+
+         users.push_back(v);
+
+         f.write_delimited_to_file(users);
+    }
+
+    return found;
+}
 
 int main(int argc, char **argv)
 {
@@ -202,6 +272,26 @@ int main(int argc, char **argv)
                     // Output the message the server received to the screen
                     cout << "Received: >>>> " << buffer << " from client number: " << clientNumber << endl;
  
+                    std::string str = buffer;
+
+                    std::vector< std::string > v = read_message(str);
+
+                    if (v[0] == "login")
+                    {
+                        if (check_login(v[1], v[2]))
+                            SDLNet_TCP_Send(clientSocket[clientNumber], "logged in", 10);
+                        else
+                            SDLNet_TCP_Send(clientSocket[clientNumber], "not logged in", 14);
+                    }
+
+                    else if (v[0] == "register")
+                    {
+                        if (register_user(v[1], v[2]))
+                            SDLNet_TCP_Send(clientSocket[clientNumber], "already registered", 19);
+                        else
+                            SDLNet_TCP_Send(clientSocket[clientNumber], "registered", 11);
+                    }
+
                     // Send message to all other connected clients
                     int originatingClient = clientNumber;
  

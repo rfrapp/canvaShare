@@ -11,6 +11,8 @@
 #include "TextBox.h"
 #include "TextSurface.h"
 
+class Program;
+
 class LoginMenu : public Menu 
 {
 private:
@@ -27,17 +29,14 @@ private:
 	TextSurface * title_surface;
 	TextSurface * message_surface;
 
+	Program * parent;
 	Button * register_button;
 
 	bool show_message;
 	bool logged_in;
 
 public:
-	LoginMenu(SDL_Renderer * r, int _w, int _h) 
-	    : logged_in(false), w(_w), h(_h), renderer(r),
-	      show_message(true)
-	{
-	}
+	LoginMenu(Program *p, SDL_Renderer * r, int _w, int _h);
 
 	void draw();
 	void handle_input(SDL_Event * e);
@@ -45,6 +44,7 @@ public:
 	bool load_media();
 	void init_controls();
 	void get_notification(std::string event, int id);
+	void receive_message(std::string str);
 
 	void authenticate();
 	void register_user();
