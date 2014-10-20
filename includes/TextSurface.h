@@ -53,6 +53,7 @@ public:
 				 multiline(multi_line), is_password_box(false),
 	   			 visible_char_start(0), visible_char_end(0), infinite(infinite_width)
 	{
+
 		text_color.r = r;
 		text_color.g = g;
 		text_color.b = b;

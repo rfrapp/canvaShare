@@ -28,9 +28,9 @@ private:
 public:
 	TextBox(SDL_Renderer *r, Font *f, int w, int h, int x = 0, int y = 0,
 					  bool o = true, bool multi_line = true,
-		              Uint8 b_r = 255, Uint8 b_g = 255, Uint8 b_b = 255,
-		              Uint8 f_r = 0,   Uint8 f_g = 0,   Uint8 f_b = 0,
-		              Uint8 o_r = 0xBB, Uint8 o_g = 0xBB, Uint8 o_b = 0xBB);
+		              int b_r = 255, int b_g = 255, int b_b = 255,
+		              int f_r = 0,   int f_g = 0,   int f_b = 0,
+		              int o_r = 0xBB, int o_g = 0xBB, int o_b = 0xBB);
 
 	void draw();
 

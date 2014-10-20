@@ -5,12 +5,12 @@
 
 TextBox::TextBox(SDL_Renderer *r, Font *f, int w, int h, int x, int y,
 				  bool o, bool multi_line,
-	              Uint8 b_r, Uint8 b_g, Uint8 b_b,
-	              Uint8 f_r,   Uint8 f_g, Uint8 f_b,
-	              Uint8 o_r, Uint8 o_g, Uint8 o_b)
+	              int b_r, int b_g, int b_b,
+	              int f_r,   int f_g, int f_b,
+	              int o_r, int o_g, int o_b)
 		
 		: Control(r, w, h, x, y, b_r, b_g, b_b, f_r, f_g, f_b),
-		  surface(f, w, h, x, y, multi_line, f_r, f_g, f_b), cursor_rect(x, y, 1, f->get_line_height()),
+		  surface(f, w, h, x, y, multi_line, false, f_r, f_g, f_b), cursor_rect(x, y, 1, f->get_line_height()),
 		  cursor_pos(0), outline(o), outline_r(o_r), outline_g(o_g),
 		  outline_b(o_b), current_line(0), multiline(multi_line),
 		  is_password_box(false), page(-1), parent(NULL), send(false)
